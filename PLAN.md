@@ -43,8 +43,8 @@ These will be fixed as the **Phase 0 Cleanup** step at the start of Phase 1 via 
 | Phase | Name | Status |
 |-------|------|--------|
 | 0 | Foundation | ✅ Complete |
-| 1 | Core Complaint Loop | 🔲 Next |
-| 2 | AI Layer | 🔲 Planned |
+| 1 | Core Complaint Loop | ✅ Complete |
+| 2 | AI Layer | ⏳ In Progress |
 | 3 | Notifications & Real-time | 🔲 Planned |
 | 4 | Analytics & Dashboards | 🔲 Planned |
 | 5 | Enterprise Hardening | 🔲 Planned |
@@ -523,7 +523,7 @@ chore(db): add referenceNumber migration
 3. Register router in `apps/api/src/app.ts`
 4. Add container entry in `apps/api/src/container.ts`
 5. Write at least a smoke-test for the happy path
-
+what
 ### Adding a new dashboard page
 1. Create route under `apps/web/src/app/dashboard/{role}/{page}/page.tsx`
 2. Wrap in `Suspense` with `LoadingOverlay` fallback
@@ -534,4 +534,10 @@ chore(db): add referenceNumber migration
 
 ## Next Action
 
-**Start Phase 1.0** — run the schema migration to fix the gaps listed above, then implement the complaints module backend before touching any frontend.
+**Start Phase 2** — activate Gemini API in `packages/ai`, complaint classification on submit, knowledge base CRUD + embeddings, AI chat assistant with RAG.
+
+### Phase 1 — what was completed to close it out
+
+- Added `GET /v1/tickets/:id/notes` endpoint (service, controller, route)
+- Created `/dashboard/staff/complaints/[id]` — complaint detail with status transitions, internal notes, timeline
+- Created `/dashboard/dept-head/complaints` — department complaints table with status filter and pagination

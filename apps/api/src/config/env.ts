@@ -9,6 +9,9 @@ const envSchema = z.object({
   JWT_SECRET: z.string().min(32),
   JWT_REFRESH_SECRET: z.string().min(32),
   CORS_ORIGIN: z.string().default("http://localhost:3000"),
+  GEMINI_API_KEY: z.string().optional(),
+  RESEND_API_KEY: z.string().optional(),
+  RESEND_FROM_EMAIL: z.string().default("Clarion <no-reply@clarion.app>"),
 });
 
 function parseEnv() {

@@ -38,8 +38,8 @@ export default function LoginPage() {
     setError(null);
     try {
       const result = await api.login(data);
-      setAuth(result.user, result.tokens);
-      router.push(getDashboardRoute(result.user.role as UserRole));
+      setAuth(result.data.user, result.data.tokens);
+      router.push(getDashboardRoute(result.data.user.role as UserRole));
     } catch (err) {
       if (err instanceof ApiClientError) {
         setError(err.message);

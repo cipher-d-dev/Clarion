@@ -35,6 +35,9 @@ export enum Permission {
   KB_WRITE = "kb:write",
   KB_PUBLISH = "kb:publish",
 
+  // Chat
+  CHAT = "chat",
+
   // Analytics
   ANALYTICS_VIEW = "analytics:view",
   ANALYTICS_EXPORT = "analytics:export",
@@ -42,6 +45,9 @@ export enum Permission {
   // System
   SYSTEM_ADMIN = "system:admin",
   AUDIT_READ = "audit:read",
+
+  // Notifications
+  NOTIFICATION_READ = "notification:read",
 }
 
 export const rolePermissions: Record<UserRole, Permission[]> = {
@@ -49,6 +55,8 @@ export const rolePermissions: Record<UserRole, Permission[]> = {
     Permission.COMPLAINT_CREATE,
     Permission.COMPLAINT_READ_OWN,
     Permission.KB_READ,
+    Permission.CHAT,
+    Permission.NOTIFICATION_READ,
   ],
 
   [UserRole.LECTURER]: [
@@ -57,6 +65,8 @@ export const rolePermissions: Record<UserRole, Permission[]> = {
     Permission.COMPLAINT_READ_DEPT,
     Permission.TICKET_READ,
     Permission.KB_READ,
+    Permission.CHAT,
+    Permission.NOTIFICATION_READ,
   ],
 
   [UserRole.ADMIN_STAFF]: [
@@ -69,6 +79,8 @@ export const rolePermissions: Record<UserRole, Permission[]> = {
     Permission.USER_READ,
     Permission.KB_READ,
     Permission.KB_WRITE,
+    Permission.CHAT,
+    Permission.NOTIFICATION_READ,
   ],
 
   [UserRole.DEPT_HEAD]: [
@@ -88,6 +100,8 @@ export const rolePermissions: Record<UserRole, Permission[]> = {
     Permission.KB_PUBLISH,
     Permission.ANALYTICS_VIEW,
     Permission.AUDIT_READ,
+    Permission.CHAT,
+    Permission.NOTIFICATION_READ,
   ],
 
   [UserRole.INSTITUTION_MGMT]: [
@@ -113,6 +127,8 @@ export const rolePermissions: Record<UserRole, Permission[]> = {
     Permission.ANALYTICS_VIEW,
     Permission.ANALYTICS_EXPORT,
     Permission.AUDIT_READ,
+    Permission.CHAT,
+    Permission.NOTIFICATION_READ,
   ],
 
   [UserRole.SUPER_ADMIN]: Object.values(Permission),

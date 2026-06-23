@@ -1,5 +1,10 @@
 import { z } from "zod";
-import { UserRole } from "../enums";
+import {
+  ComplaintStatus,
+  TicketPriority,
+  TicketStatus,
+  UserRole,
+} from "../enums";
 
 export const loginSchema = z.object({
   email: z.string().email("Invalid email address"),
@@ -49,6 +54,90 @@ export const paginationSchema = z.object({
 
 export type PaginationInput = z.infer<typeof paginationSchema>;
 
+export const complaintFilterSchema = paginationSchema.extend({
+  status: z.nativeEnum(ComplaintStatus).optional(),
+  departmentId: z.string().optional(),
+  category: z.string().optional(),
+  search: z.string().optional(),
+});
+
+export type ComplaintFilterInput = z.infer<typeof complaintFilterSchema>;
+
+export const createComplaintSchema = z.object({
+  title: z.string().min(5, "Title must be at least 5 characters").max(200),
+  description: z
+    .string()
+    .min(20, "Description must be at least 20 characters")
+    .max(5000),
+  category: z.string().optional(),
+  departmentId: z.string().optional(),
+  isAnonymous: z.boolean().default(false),
+});
+
+export type CreateComplaintInput = z.infer<typeof createComplaintSchema>;
+
+export const updateComplaintStatusSchema = z.object({
+  status: z.nativeEnum(ComplaintStatus),
+  note: z.string().max(1000).optional(),
+});
+
+export type UpdateComplaintStatusInput = z.infer<
+  typeof updateComplaintStatusSchema
+>;
+
+export const addInternalNoteSchema = z.object({
+  content: z.string().min(1).max(2000),
+});
+
+export type AddInternalNoteInput = z.infer<typeof addInternalNoteSchema>;
+
+export const rateComplaintSchema = z.object({
+  rating: z.number().int().min(1).max(5),
+});
+
+export type RateComplaintInput = z.infer<typeof rateComplaintSchema>;
+
+export const ticketFilterSchema = paginationSchema.extend({
+  status: z.nativeEnum(TicketStatus).optional(),
+  priority: z.nativeEnum(TicketPriority).optional(),
+  departmentId: z.string().optional(),
+  assigneeId: z.string().optional(),
+  slaBreached: z.coerce.boolean().optional(),
+});
+
+export type TicketFilterInput = z.infer<typeof ticketFilterSchema>;
+
+export const assignTicketSchema = z.object({
+  assigneeId: z.string().min(1, "Assignee is required"),
+  note: z.string().max(500).optional(),
+});
+
+export type AssignTicketInput = z.infer<typeof assignTicketSchema>;
+
+export const updateTicketStatusSchema = z.object({
+  status: z.nativeEnum(TicketStatus),
+  note: z.string().max(1000).optional(),
+});
+
+export type UpdateTicketStatusInput = z.infer<typeof updateTicketStatusSchema>;
+
+export const escalateTicketSchema = z.object({
+  reason: z
+    .string()
+    .min(10, "Escalation reason must be at least 10 characters")
+    .max(1000),
+});
+
+export type EscalateTicketInput = z.infer<typeof escalateTicketSchema>;
+
+export const updateProfileSchema = z.object({
+  firstName: z.string().min(1).max(100).optional(),
+  lastName: z.string().min(1).max(100).optional(),
+  phone: z.string().optional(),
+});
+
+export type UpdateProfileInput = z.infer<typeof updateProfileSchema>;
+
 export const apiSuccessSchema = <T extends z.ZodType>(dataSchema: T) =>
   z.object({
     success: z.literal(true),
@@ -71,6 +160,39 @@ export const apiErrorSchema = z.object({
     details: z.record(z.array(z.string())).optional(),
   }),
 });
+
+// ── Knowledge Base ──────────────────────────────────────────────────────────
+
+export const createKnowledgeArticleSchema = z.object({
+  title: z.string().min(3).max(300),
+  content: z.string().min(10),
+  category: z.string().optional(),
+  slug: z.string().optional(),
+});
+
+export type CreateKnowledgeArticleInput = z.infer<typeof createKnowledgeArticleSchema>;
+
+export const updateKnowledgeArticleSchema = createKnowledgeArticleSchema.partial();
+
+export type UpdateKnowledgeArticleInput = z.infer<typeof updateKnowledgeArticleSchema>;
+
+export const kbSearchSchema = z.object({
+  q: z.string().min(1).max(500),
+  limit: z.coerce.number().int().min(1).max(20).default(5),
+});
+
+export type KbSearchInput = z.infer<typeof kbSearchSchema>;
+
+// ── Chat ────────────────────────────────────────────────────────────────────
+
+export const chatMessageSchema = z.object({
+  message: z.string().min(1).max(2000),
+  complaintId: z.string().optional(),
+});
+
+export type ChatMessageInput = z.infer<typeof chatMessageSchema>;
+
+// ── Auth response ───────────────────────────────────────────────────────────
 
 export const authResponseSchema = z.object({
   user: z.object({

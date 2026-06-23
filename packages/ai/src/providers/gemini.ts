@@ -1,3 +1,5 @@
+import { GoogleGenerativeAI } from "@google/generative-ai";
+import { z } from "zod";
 import type {
   AIProvider,
   AIProviderConfig,
@@ -9,89 +11,125 @@ import type {
   TrendAnalysis,
 } from "../types.js";
 
-const DEFAULT_CATEGORIES = [
-  "Academic",
-  "Facilities",
-  "Harassment",
-  "Financial",
-  "Administrative",
-  "Other",
-];
+const classificationSchema = z.object({
+  category: z.string(),
+  confidence: z.number().min(0).max(1),
+  suggestedPriority: z.enum(["LOW", "MEDIUM", "HIGH", "URGENT"]),
+  suggestedSeverity: z.enum(["MINOR", "MODERATE", "MAJOR", "CRITICAL"]),
+  sentimentScore: z.number().min(0).max(1).optional(),
+  tags: z.array(z.string()),
+  suggestedDepartment: z.string().optional(),
+});
 
 export class GeminiProvider implements AIProvider {
   readonly name = "gemini";
-  private config: AIProviderConfig;
+  private client: GoogleGenerativeAI;
+  private model: string;
 
   constructor(config: AIProviderConfig = {}) {
-    this.config = {
-      model: "gemini-1.5-flash",
-      maxTokens: 1024,
-      temperature: 0.7,
-      ...config,
-    };
+    if (!config.apiKey) throw new Error("GEMINI_API_KEY is required");
+    this.client = new GoogleGenerativeAI(config.apiKey);
+    this.model = config.model ?? "gemini-2.5-flash";
   }
 
   async classify(text: string): Promise<ClassificationResult> {
-    const lowerText = text.toLowerCase();
-    let category = "Other";
-    let confidence = 0.65;
+    const model = this.client.getGenerativeModel({ model: this.model });
+    const prompt = `You are a complaint classification system for a university. Classify the following complaint and respond ONLY with valid JSON matching this schema exactly:
+{
+  "category": "Academic|Facilities|Harassment|Financial|Administrative|IT|Health|Safety|Other",
+  "confidence": 0.0-1.0,
+  "suggestedPriority": "LOW|MEDIUM|HIGH|URGENT",
+  "suggestedSeverity": "MINOR|MODERATE|MAJOR|CRITICAL",
+  "sentimentScore": 0.0-1.0 (0=very negative, 1=very positive),
+  "tags": ["tag1", "tag2"],
+  "suggestedDepartment": "department name or null"
+}
 
-    for (const cat of DEFAULT_CATEGORIES) {
-      if (lowerText.includes(cat.toLowerCase())) {
-        category = cat;
-        confidence = 0.85;
-        break;
-      }
-    }
+Complaint: "${text.slice(0, 2000)}"`;
 
-    if (lowerText.includes("harass") || lowerText.includes("bully")) {
-      category = "Harassment";
-      confidence = 0.92;
-    } else if (lowerText.includes("fee") || lowerText.includes("payment")) {
-      category = "Financial";
-      confidence = 0.88;
-    } else if (lowerText.includes("hostel") || lowerText.includes("building")) {
-      category = "Facilities";
-      confidence = 0.87;
-    }
-
-    const isUrgent =
-      lowerText.includes("urgent") ||
-      lowerText.includes("emergency") ||
-      category === "Harassment";
-
+    const result = await model.generateContent(prompt);
+    const raw = result.response.text().trim().replace(/^```json\n?|\n?```$/g, "");
+    const parsed = classificationSchema.parse(JSON.parse(raw));
     return {
-      category,
-      confidence,
-      suggestedPriority: isUrgent ? "HIGH" : "MEDIUM",
-      suggestedSeverity: category === "Harassment" ? "CRITICAL" : "MODERATE",
-      tags: [category.toLowerCase(), ...(isUrgent ? ["urgent"] : [])],
+      category: parsed.category,
+      confidence: parsed.confidence,
+      suggestedPriority: parsed.suggestedPriority,
+      suggestedSeverity: parsed.suggestedSeverity,
+      sentimentScore: parsed.sentimentScore,
+      tags: parsed.tags,
+      suggestedDepartment: parsed.suggestedDepartment,
     };
   }
 
-  async chat(
-    messages: ChatMessage[],
-    _context?: Record<string, unknown>,
-  ): Promise<ChatResponse> {
-    const lastUserMessage =
-      [...messages].reverse().find((m) => m.role === "user")?.content ?? "";
+  async chat(messages: ChatMessage[], context?: Record<string, unknown>): Promise<ChatResponse> {
+    const model = this.client.getGenerativeModel({ model: this.model });
 
+    const isStaff = context?.userRole && !["STUDENT", "LECTURER"].includes(context.userRole as string);
+
+    const systemParts: string[] = [
+      "You are Clarion, an AI assistant for a university complaint management system.",
+    ];
+
+    if (isStaff) {
+      systemParts.push(
+        "You are speaking with a staff member. You can help them with:",
+        "- Reviewing and prioritising their assigned tickets",
+        "- Looking up complaint details by reference number (CLN-YYYY-NNNNN)",
+        "- Suggesting next actions for complaints",
+        "- General complaint management guidance",
+        "",
+        "When asked about workload or tickets to tackle, summarise the assigned tickets from the context ordered by priority (URGENT > HIGH > MEDIUM > LOW).",
+        "Be helpful and direct. Provide specific information when available.",
+      );
+    } else {
+      systemParts.push(
+        "You can help users with:",
+        "- Looking up complaints by reference number (format: CLN-YYYY-NNNNN)",
+        "- Explaining how to submit complaints",
+        "- Checking complaint status",
+        "- General university policies and procedures",
+        "",
+        "Be helpful and direct. Provide specific information when available.",
+      );
+    }
+
+    if (context?.institutionName) {
+      systemParts.push(`Institution: ${context.institutionName}`);
+    }
+    if (context?.kbContext) {
+      systemParts.push(`\nRelevant knowledge base articles:\n${context.kbContext}`);
+    }
+    if (context?.complaintContext) {
+      systemParts.push(`\nComplaint context:\n${context.complaintContext}`);
+    }
+
+    const history = messages.slice(0, -1).map((m) => ({
+      role: m.role === "assistant" ? "model" : "user" as const,
+      parts: [{ text: m.content }],
+    }));
+
+    const lastMessage = messages[messages.length - 1]?.content ?? "";
+
+    const chat = model.startChat({
+      systemInstruction: {
+        role: "system",
+        parts: [{ text: systemParts.join("\n") }]
+      },
+      history,
+    });
+
+    const response = await chat.sendMessage(lastMessage);
     return {
-      message: `[Gemini Stub] I received your message about "${lastUserMessage.slice(0, 80)}${lastUserMessage.length > 80 ? "..." : ""}". This is a stub response. Configure GEMINI_API_KEY to enable real AI responses.`,
-      confidence: 0.5,
+      message: response.response.text(),
+      confidence: 0.9,
     };
   }
 
   async embed(text: string): Promise<EmbeddingResult> {
-    const dimensions = 768;
-    const embedding: number[] = [];
-
-    for (let i = 0; i < dimensions; i++) {
-      const charCode = text.charCodeAt(i % text.length) || 0;
-      embedding.push(Math.sin(charCode + i) * 0.5);
-    }
-
-    return { embedding, dimensions };
+    const model = this.client.getGenerativeModel({ model: "text-embedding-004" });
+    const result = await model.embedContent(text.slice(0, 8000));
+    const embedding = result.embedding.values;
+    return { embedding, dimensions: embedding.length };
   }
 
   async analyzeTrends(
@@ -99,7 +137,6 @@ export class GeminiProvider implements AIProvider {
     period = "30d",
   ): Promise<TrendAnalysis> {
     const categoryCounts = new Map<string, number>();
-
     for (const item of data) {
       categoryCounts.set(item.category, (categoryCounts.get(item.category) ?? 0) + 1);
     }
@@ -107,33 +144,37 @@ export class GeminiProvider implements AIProvider {
     const topCategories = [...categoryCounts.entries()]
       .sort((a, b) => b[1] - a[1])
       .slice(0, 5)
-      .map(([category, count]) => ({
-        category,
-        count,
-        trend: "stable" as const,
-      }));
+      .map(([category, count]) => ({ category, count, trend: "stable" as const }));
 
-    return {
-      period,
-      totalComplaints: data.length,
-      topCategories,
-      sentimentScore: 0.62,
-      insights: [
-        `[Stub] Analyzed ${data.length} complaints over ${period}`,
-        topCategories.length > 0
-          ? `Top category: ${topCategories[0]?.category ?? "N/A"}`
-          : "No category data available",
-        "Configure GEMINI_API_KEY for real trend analysis",
-      ],
-    };
+    if (data.length === 0) {
+      return { period, totalComplaints: 0, topCategories: [], sentimentScore: 0.5, insights: ["No data available"] };
+    }
+
+    const model = this.client.getGenerativeModel({ model: this.model });
+    const prompt = `Analyze these university complaint statistics and provide 3 brief insights (one sentence each). Respond as a JSON array of strings.
+Total complaints: ${data.length}
+Period: ${period}
+Top categories: ${topCategories.map((c) => `${c.category}(${c.count})`).join(", ")}`;
+
+    let insights: string[] = [];
+    try {
+      const result = await model.generateContent(prompt);
+      const raw = result.response.text().trim().replace(/^```json\n?|\n?```$/g, "");
+      insights = z.array(z.string()).parse(JSON.parse(raw));
+    } catch {
+      insights = [`${data.length} complaints analyzed over ${period}`];
+    }
+
+    return { period, totalComplaints: data.length, topCategories, sentimentScore: 0.5, insights };
   }
 
   async recommend(
     complaintText: string,
     knowledgeBase: Array<{ id: string; title: string; content: string }> = [],
   ): Promise<Recommendation[]> {
-    const keywords = complaintText.toLowerCase().split(/\s+/).slice(0, 10);
+    if (knowledgeBase.length === 0) return [];
 
+    const keywords = complaintText.toLowerCase().split(/\s+/).slice(0, 10);
     return knowledgeBase
       .map((article) => {
         const contentLower = `${article.title} ${article.content}`.toLowerCase();

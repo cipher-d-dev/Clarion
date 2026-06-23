@@ -3,6 +3,8 @@ export interface ClassificationResult {
   confidence: number;
   suggestedPriority: "LOW" | "MEDIUM" | "HIGH" | "URGENT";
   suggestedSeverity: "MINOR" | "MODERATE" | "MAJOR" | "CRITICAL";
+  sentimentScore?: number;
+  suggestedDepartment?: string;
   tags: string[];
 }
 

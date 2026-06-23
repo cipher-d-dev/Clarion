@@ -3,8 +3,9 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
 }
 
 // ─── Enums ───────────────────────────────────────────────────────────────────
@@ -22,11 +23,22 @@ enum ComplaintStatus {
   DRAFT
   SUBMITTED
   UNDER_REVIEW
+  ASSIGNED
   IN_PROGRESS
+  AWAITING_INFORMATION
   ESCALATED
   RESOLVED
   CLOSED
   REJECTED
+}
+
+enum TicketStatus {
+  OPEN
+  ASSIGNED
+  IN_PROGRESS
+  PENDING_INFO
+  RESOLVED
+  CLOSED
 }
 
 enum TicketPriority {
@@ -78,6 +90,7 @@ model Institution {
   knowledgeArticles KnowledgeArticle[]
   notifications    Notification[]
   auditLogs        AuditLog[]
+  chatMessages     ChatMessage[]
 
   @@index([slug])
   @@index([deletedAt])
@@ -159,6 +172,7 @@ model User {
   notifications Notification[]
   auditLogs    AuditLog[]    @relation("AuditActor")
   escalations  Escalation[]  @relation("EscalationInitiator")
+  chatMessages ChatMessage[]
 
   @@index([institutionId])
   @@index([institutionId, role])
@@ -190,11 +204,15 @@ model Complaint {
   institutionId String
   departmentId  String?
   submitterId   String
+  referenceNumber String?
   title         String
   description   String
   status        ComplaintStatus @default(DRAFT)
   category      String?
   isAnonymous   Boolean         @default(false)
+  sentimentScore  Float?
+  aiMetadata      Json?
+  satisfactionRating Int?
   resolvedAt    DateTime?
   createdAt     DateTime        @default(now())
   updatedAt     DateTime        @updatedAt
@@ -211,6 +229,7 @@ model Complaint {
   @@index([institutionId, status])
   @@index([institutionId, departmentId])
   @@index([institutionId, submitterId])
+  @@index([institutionId, referenceNumber])
   @@index([institutionId, deletedAt])
 }
 
@@ -220,11 +239,15 @@ model Ticket {
   departmentId  String?
   complaintId   String         @unique
   assigneeId    String?
+  referenceNumber String?
   title         String
   description   String?
   priority      TicketPriority @default(MEDIUM)
   severity      TicketSeverity @default(MODERATE)
-  status        ComplaintStatus @default(SUBMITTED)
+  status        TicketStatus   @default(OPEN)
+  slaDeadline   DateTime?
+  slaBreached   Boolean        @default(false)
+  escalatedLevel Int           @default(0)
   dueAt         DateTime?
   resolvedAt    DateTime?
   createdAt     DateTime       @default(now())
@@ -334,6 +357,7 @@ model KnowledgeArticle {
   category      String?
   isPublished   Boolean   @default(false)
   viewCount     Int       @default(0)
+  embedding     String?   @db.Text  // JSON-serialized float array (pgvector via raw SQL)
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
   deletedAt     DateTime?
@@ -344,6 +368,21 @@ model KnowledgeArticle {
   @@index([institutionId])
   @@index([institutionId, isPublished])
   @@index([institutionId, deletedAt])
+}
+
+model ChatMessage {
+  id            String   @id @default(cuid())
+  institutionId String
+  userId        String
+  role          String   // "user" | "assistant"
+  content       String
+  metadata      Json?
+  createdAt     DateTime @default(now())
+
+  institution Institution @relation(fields: [institutionId], references: [id], onDelete: Cascade)
+  user        User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([institutionId, userId, createdAt])
 }
 
 model Notification {
