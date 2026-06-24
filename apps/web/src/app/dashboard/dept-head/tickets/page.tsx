@@ -6,7 +6,6 @@ import { Button } from "@clarion/ui";
 import { useTickets } from "@/hooks/use-api";
 import { PageHeader, EmptyState } from "@/components/ui-helpers";
 import { TicketPriorityBadge, TicketStatusBadge } from "@/components/badges";
-import { TicketStatus } from "@clarion/shared";
 
 export default function DeptHeadTicketsPage() {
   const [page, setPage] = useState(1);

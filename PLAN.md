@@ -281,7 +281,7 @@ Flow:
 
 ## Phase 3 — Notifications & Real-time
 
-**Goal:** Users are notified of complaint activity via in-app and email. Dashboard updates in real-time.
+**Goal:** Users are notified of complaint activity via in-app and email. Dashboard uapdates in real-time.
 
 ### 3.1 — Backend: notifications module
 
@@ -312,7 +312,7 @@ Flow:
 
 - Add `EmailQueue` using BullMQ with Upstash Redis
 - Jobs dispatched by `NotificationService` for high-value events: assignment, resolution, escalation
-- Email templates: HTML using `react-email` or plain template strings
+- Email templates: HTML using `react-email` or plain template stringsimplemen
 - Resend SDK for delivery
 - Worker runs as a separate Render service (or same process in development)
 

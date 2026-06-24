@@ -4,7 +4,6 @@ import {
   useQuery,
   useMutation,
   useQueryClient,
-  type UseQueryOptions,
 } from "@tanstack/react-query";
 import { api } from "@/lib/api-client";
 import { useAuthStore } from "@/stores/auth-store";
@@ -104,6 +103,28 @@ export function useRateComplaint() {
   });
 }
 
+export function useComplaintAttachments(id: string) {
+  const token = useToken();
+  return useQuery({
+    queryKey: ["complaints", id, "attachments"],
+    queryFn: () => api.getComplaintAttachments(id, token),
+    enabled: !!token && !!id,
+  });
+}
+
+export function useUploadComplaintAttachment() {
+  const token = useToken();
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: ({ id, file }: { id: string; file: File }) =>
+      api.uploadComplaintAttachment(id, file, token),
+    onSuccess: (_r, { id }) => {
+      qc.invalidateQueries({ queryKey: ["complaints", id] });
+      qc.invalidateQueries({ queryKey: ["complaints", id, "attachments"] });
+    },
+  });
+}
+
 // ── Tickets ─────────────────────────────────────────────────────────────────
 
 export function useTickets(filters: Record<string, unknown> = {}) {
@@ -189,6 +210,72 @@ export function useUpdateMe() {
   });
 }
 
+// ── Analytics ────────────────────────────────────────────────────────────────
+
+export function useAnalyticsOverview() {
+  const token = useToken();
+  return useQuery({
+    queryKey: ["analytics", "overview"],
+    queryFn: () => api.getAnalyticsOverview(token),
+    enabled: !!token,
+  });
+}
+
+export function useAnalyticsComplaints(from?: string, to?: string) {
+  const token = useToken();
+  return useQuery({
+    queryKey: ["analytics", "complaints", from, to],
+    queryFn: () => api.getAnalyticsComplaints(token, from, to),
+    enabled: !!token,
+  });
+}
+
+export function useAnalyticsDepartments() {
+  const token = useToken();
+  return useQuery({
+    queryKey: ["analytics", "departments"],
+    queryFn: () => api.getAnalyticsDepartments(token),
+    enabled: !!token,
+  });
+}
+
+export function useAnalyticsSLA() {
+  const token = useToken();
+  return useQuery({
+    queryKey: ["analytics", "sla"],
+    queryFn: () => api.getAnalyticsSLA(token),
+    enabled: !!token,
+  });
+}
+
+export function useAnalyticsTrends(days?: number) {
+  const token = useToken();
+  return useQuery({
+    queryKey: ["analytics", "trends", days],
+    queryFn: () => api.getAnalyticsTrends(token, days),
+    enabled: !!token,
+  });
+}
+
+export function useAnalyticsStaff() {
+  const token = useToken();
+  return useQuery({
+    queryKey: ["analytics", "staff"],
+    queryFn: () => api.getAnalyticsStaff(token),
+    enabled: !!token,
+  });
+}
+
+export function useAnalyticsAiInsights() {
+  const token = useToken();
+  return useQuery({
+    queryKey: ["analytics", "ai-insights"],
+    queryFn: () => api.getAnalyticsAiInsights(token),
+    enabled: !!token,
+    staleTime: 5 * 60 * 1000, // 5 min — AI insights are expensive
+  });
+}
+
 // ── AI Chat ──────────────────────────────────────────────────────────────────
 
 export function useChatHistory() {
@@ -204,17 +291,12 @@ export function useSendChatMessage() {
   const qc = useQueryClient();
   const token = useToken();
   return useMutation({
-    mutationFn: (data: { message: string; complaintId?: string }) => 
+    mutationFn: (data: { message: string; complaintId?: string }) =>
       api.sendChatMessage(data, token),
     onMutate: async (data) => {
-      // Cancel outgoing refetches
       await qc.cancelQueries({ queryKey: ["chat", "history"] });
-      
-      // Snapshot previous value
       const previousHistory = qc.getQueryData(["chat", "history"]);
-      
-      // Optimistically update with user message
-      qc.setQueryData(["chat", "history"], (old: any) => {
+      qc.setQueryData(["chat", "history"], (old: { data?: unknown[] } | undefined) => {
         const userMessage = {
           id: Date.now().toString(),
           role: "user",
@@ -223,17 +305,14 @@ export function useSendChatMessage() {
         };
         return { ...old, data: [...(old?.data || []), userMessage] };
       });
-      
       return { previousHistory };
     },
-    onError: (err, newData, context) => {
-      // Rollback on error
+    onError: (_err, _newData, context) => {
       qc.setQueryData(["chat", "history"], context?.previousHistory);
     },
     onSuccess: () => qc.invalidateQueries({ queryKey: ["chat", "history"] }),
   });
 }
-
 
 // ── Notifications ─────────────────────────────────────────────────────────────
 
@@ -243,7 +322,7 @@ export function useNotifications(page = 1) {
     queryKey: ["notifications", page],
     queryFn: () => api.getNotifications(token, page),
     enabled: !!token,
-    refetchInterval: false, // real-time via SSE instead
+    refetchInterval: false,
   });
 }
 
@@ -253,7 +332,7 @@ export function useUnreadCount() {
     queryKey: ["notifications", "unread-count"],
     queryFn: () => api.getUnreadCount(token),
     enabled: !!token,
-    refetchInterval: 60_000, // fallback poll every 60s
+    refetchInterval: 60_000,
   });
 }
 
@@ -262,9 +341,7 @@ export function useMarkNotificationRead() {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: (id: string) => api.markNotificationRead(id, token),
-    onSuccess: () => {
-      qc.invalidateQueries({ queryKey: ["notifications"] });
-    },
+    onSuccess: () => qc.invalidateQueries({ queryKey: ["notifications"] }),
   });
 }
 
@@ -273,8 +350,65 @@ export function useMarkAllNotificationsRead() {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: () => api.markAllNotificationsRead(token),
-    onSuccess: () => {
-      qc.invalidateQueries({ queryKey: ["notifications"] });
-    },
+    onSuccess: () => qc.invalidateQueries({ queryKey: ["notifications"] }),
+  });
+}
+
+// Super admin
+
+export function useAuditLogs(filters: Record<string, unknown> = {}) {
+  const token = useToken();
+  return useQuery({
+    queryKey: ["audit", filters],
+    queryFn: () => api.getAuditLogs(filters, token),
+    enabled: !!token,
+  });
+}
+
+export function useAdminInstitutions(filters: Record<string, unknown> = {}) {
+  const token = useToken();
+  return useQuery({
+    queryKey: ["admin", "institutions", filters],
+    queryFn: () => api.getAdminInstitutions(filters, token),
+    enabled: !!token,
+  });
+}
+
+export function useCreateAdminInstitution() {
+  const token = useToken();
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (data: { name: string; slug: string; domain?: string }) =>
+      api.createAdminInstitution(data, token),
+    onSuccess: () => qc.invalidateQueries({ queryKey: ["admin", "institutions"] }),
+  });
+}
+
+export function useUpdateAdminInstitution() {
+  const token = useToken();
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: ({ id, isActive }: { id: string; isActive: boolean }) =>
+      api.updateAdminInstitution(id, { isActive }, token),
+    onSuccess: () => qc.invalidateQueries({ queryKey: ["admin", "institutions"] }),
+  });
+}
+
+export function useAdminUsers(filters: Record<string, unknown> = {}) {
+  const token = useToken();
+  return useQuery({
+    queryKey: ["admin", "users", filters],
+    queryFn: () => api.getAdminUsers(filters, token),
+    enabled: !!token,
+  });
+}
+
+export function useUpdateAdminUser() {
+  const token = useToken();
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: ({ id, data }: { id: string; data: Record<string, unknown> }) =>
+      api.updateAdminUser(id, data, token),
+    onSuccess: () => qc.invalidateQueries({ queryKey: ["admin", "users"] }),
   });
 }

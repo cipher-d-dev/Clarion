@@ -19,6 +19,7 @@ import type { ComplaintsRepository } from "./complaints.repository.js";
 import type { TicketsRepository } from "../tickets/tickets.repository.js";
 import type { AIProvider } from "@clarion/ai";
 import type { NotificationsService } from "../notifications/notifications.service.js";
+import type { AuditService } from "../audit/audit.service.js";
 
 // Valid transitions: from → allowed next statuses
 const TRANSITIONS: Record<ComplaintStatus, ComplaintStatus[]> = {
@@ -68,6 +69,7 @@ export class ComplaintsService {
     private readonly ticketsRepo: TicketsRepository,
     private readonly ai?: AIProvider,
     private readonly notifications?: NotificationsService,
+    private readonly audit?: AuditService,
   ) {}
 
   async list(
@@ -204,8 +206,15 @@ export class ComplaintsService {
       status: TicketStatus.OPEN,
       priority: ticketPriority,
       severity: ticketSeverity,
-      ...(dto.departmentId && { department: { connect: { id: dto.departmentId } } }),
+      ...(dto.departmentId && {
+        department: { connect: { id: dto.departmentId } },
+        slaDeadline: new Date(Date.now() + 72 * 60 * 60 * 1000),
+      }),
     });
+
+    this.notifications?.notifyComplaintSubmitted(
+      institutionId, submitterId, referenceNumber, complaint.id,
+    ).catch(() => {});
 
     return complaint;
   }
@@ -243,13 +252,14 @@ export class ComplaintsService {
     // Notify submitter
     if (this.notifications && complaint.submitter) {
       const { id: userId, email } = complaint.submitter as { id: string; email: string };
+      const referenceNumber = complaint.referenceNumber ?? complaint.id;
       if (dto.status === ComplaintStatus.RESOLVED) {
         this.notifications.notifyResolved(
-          complaint.institutionId, userId, email, complaint.referenceNumber, id,
+          complaint.institutionId, userId, email, referenceNumber, id,
         ).catch(() => {});
       } else {
         this.notifications.notifyComplaintUpdate(
-          complaint.institutionId, userId, complaint.referenceNumber, dto.status, id,
+          complaint.institutionId, userId, referenceNumber, dto.status, id,
         ).catch(() => {});
       }
     }
@@ -303,6 +313,62 @@ export class ComplaintsService {
     const complaint = await this.repo.findById(id, institutionId);
     if (!complaint) throw new NotFoundError("Complaint not found");
     return this.repo.getInternalNotes(id);
+  }
+
+  async addAttachment(
+    id: string,
+    institutionId: string,
+    submitterId: string,
+    file: Express.Multer.File,
+    requestMeta?: { ipAddress?: string; userAgent?: string },
+  ) {
+    const complaint = await this.repo.findById(id, institutionId);
+    if (!complaint) throw new NotFoundError("Complaint not found");
+    if (complaint.submitterId !== submitterId) throw new ForbiddenError();
+
+    const ALLOWED = ["image/jpeg", "image/png", "image/webp", "application/pdf", "application/msword",
+      "application/vnd.openxmlformats-officedocument.wordprocessingml.document"];
+    if (!ALLOWED.includes(file.mimetype)) {
+      throw new ValidationError({ file: ["File type not allowed. Use JPEG, PNG, PDF or DOCX."] });
+    }
+    if (file.size > 10 * 1024 * 1024) {
+      throw new ValidationError({ file: ["File too large. Maximum 10 MB."] });
+    }
+
+    const attachment = await this.repo.createAttachment({
+      complaintId: id,
+      fileName: file.originalname,
+      fileUrl: `/uploads/${institutionId}/complaints/${id}/${file.filename}`,
+      mimeType: file.mimetype,
+      fileSize: file.size,
+    });
+
+    await this.repo.addTimelineEvent({
+      complaint: { connect: { id } },
+      actorId: submitterId,
+      eventType: "ATTACHMENT_UPLOADED",
+      description: `Attachment uploaded: ${file.originalname}`,
+      metadata: { attachmentId: attachment.id, mimeType: file.mimetype, fileSize: file.size },
+    });
+
+    await this.audit?.log({
+      institutionId,
+      actorId: submitterId,
+      action: "COMPLAINT_ATTACHMENT_UPLOADED",
+      entityType: "ComplaintAttachment",
+      entityId: attachment.id,
+      metadata: { complaintId: id, fileName: file.originalname, fileSize: file.size },
+      ipAddress: requestMeta?.ipAddress,
+      userAgent: requestMeta?.userAgent,
+    });
+
+    return attachment;
+  }
+
+  async getAttachments(id: string, institutionId: string) {
+    const complaint = await this.repo.findById(id, institutionId);
+    if (!complaint) throw new NotFoundError("Complaint not found");
+    return this.repo.getAttachments(id);
   }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any

@@ -1,33 +1,39 @@
 "use client";
 
 import Link from "next/link";
-import { useTickets } from "@/hooks/use-api";
+import { useTickets, useAnalyticsOverview, useAnalyticsSLA } from "@/hooks/use-api";
 import { StatCard, PageHeader } from "@/components/ui-helpers";
 import { TicketPriorityBadge, TicketStatusBadge } from "@/components/badges";
-import { TicketStatus } from "@clarion/shared";
 
 export default function DeptHeadOverviewPage() {
-  const { data } = useTickets({ pageSize: 5 });
-  const items = data?.data ?? [];
-  const meta = data?.meta;
+  const overview = useAnalyticsOverview();
+  const sla = useAnalyticsSLA();
+  const { data: ticketsData } = useTickets({ pageSize: 5 });
+  const items = ticketsData?.data ?? [];
 
-  const open = items.filter((t) => [TicketStatus.OPEN, TicketStatus.ASSIGNED, TicketStatus.IN_PROGRESS].includes(t.status)).length;
-  const resolved = items.filter((t) => t.status === TicketStatus.RESOLVED).length;
-  const slaBreached = items.filter((t) => t.slaBreached).length;
+  const ov = overview.data?.data;
+  const slaData = sla.data?.data;
+  const loading = overview.isLoading || sla.isLoading;
 
   return (
     <div className="space-y-6">
       <PageHeader title="Department Overview" />
 
-      <div className="grid gap-4 sm:grid-cols-3">
-        <StatCard label="Total Tickets" value={meta?.total ?? 0} />
-        <StatCard label="Active" value={open} accent={open > 0} />
-        <StatCard label="SLA Breached" value={slaBreached} accent={slaBreached > 0} />
-      </div>
+      {loading ? (
+        <div className="grid gap-4 sm:grid-cols-3">
+          {[1, 2, 3].map((i) => <div key={i} className="h-24 rounded-lg bg-gray-100 animate-pulse" />)}
+        </div>
+      ) : (
+        <div className="grid gap-4 sm:grid-cols-3">
+          <StatCard label="Total Tickets" value={ov?.totalTickets ?? 0} />
+          <StatCard label="SLA Compliance" value={`${slaData?.compliance ?? 0}%`} />
+          <StatCard label="SLA Breached" value={slaData?.breached ?? 0} accent={(slaData?.breached ?? 0) > 0} />
+        </div>
+      )}
 
       <div>
         <div className="mb-3 flex items-center justify-between">
-          <h2 className="text-sm font-semibold text-clarion-navy-700">Department Tickets</h2>
+          <h2 className="text-sm font-semibold text-clarion-navy-700">Recent Tickets</h2>
           <Link href="/dashboard/dept-head/tickets" className="text-xs text-clarion-navy-500 hover:underline">View all</Link>
         </div>
         <div className="space-y-2">

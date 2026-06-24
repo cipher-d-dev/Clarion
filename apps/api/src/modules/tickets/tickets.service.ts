@@ -92,7 +92,7 @@ export class TicketsService {
             institutionId,
             assignee.id,
             assignee.email,
-            ticket.referenceNumber,
+            ticket.referenceNumber ?? ticket.id,
             id,
             ticket.complaint.title,
           ).catch(() => {});
@@ -161,7 +161,7 @@ export class TicketsService {
     if (this.notifications && ticket.departmentId) {
       this.repo.findDeptHead(ticket.departmentId).then((head) => {
         if (head) {
-          this.notifications!.notifyEscalation(institutionId, head.id, head.email, ticket.referenceNumber, id).catch(() => {});
+          this.notifications!.notifyEscalation(institutionId, head.id, head.email, ticket.referenceNumber ?? ticket.id, id).catch(() => {});
         }
       }).catch(() => {});
     }

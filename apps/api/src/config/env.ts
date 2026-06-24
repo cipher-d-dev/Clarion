@@ -12,6 +12,7 @@ const envSchema = z.object({
   GEMINI_API_KEY: z.string().optional(),
   RESEND_API_KEY: z.string().optional(),
   RESEND_FROM_EMAIL: z.string().default("Clarion <no-reply@clarion.app>"),
+  SENTRY_DSN: z.string().optional(),
 });
 
 function parseEnv() {

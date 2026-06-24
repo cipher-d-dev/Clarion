@@ -6,7 +6,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { escalateTicketSchema, type EscalateTicketInput } from "@clarion/shared";
 import { Button, Card, CardContent, CardHeader, CardTitle, FormField, FormLabel, FormControl, FormMessage } from "@clarion/ui";
-import { PageHeader, ConfirmDialog } from "@/components/ui-helpers";
+import { PageHeader, ConfirmDialog, useToast } from "@/components/ui-helpers";
 import { TicketPriorityBadge, TicketStatusBadge, ComplaintStatusBadge } from "@/components/badges";
 import { useTicket, useEscalateTicket, useUpdateTicketStatus } from "@/hooks/use-api";
 import { TicketStatus } from "@clarion/shared";
@@ -26,6 +26,7 @@ export default function DeptHeadTicketDetailPage() {
   });
 
   const ticket = ticketRes?.data;
+  const toast = useToast();
 
   if (isLoading) return <div className="h-64 rounded-lg bg-gray-100 animate-pulse" />;
   if (!ticket) return <p className="text-sm text-muted-foreground">Ticket not found.</p>;
@@ -33,15 +34,25 @@ export default function DeptHeadTicketDetailPage() {
   const canEscalate = ![TicketStatus.RESOLVED, TicketStatus.CLOSED].includes(ticket.status);
 
   const handleEscalate = async (data: EscalateTicketInput) => {
-    await escalate({ id, data });
-    setShowEscalate(false);
-    form.reset();
+    try {
+      await escalate({ id, data });
+      setShowEscalate(false);
+      form.reset();
+      toast("Ticket escalated");
+    } catch {
+      toast("Failed to escalate ticket", "error");
+    }
   };
 
   const handleStatusChange = async () => {
     if (!confirmStatus) return;
-    await updateStatus({ id, data: { status: confirmStatus } });
-    setConfirmStatus(null);
+    try {
+      await updateStatus({ id, data: { status: confirmStatus } });
+      setConfirmStatus(null);
+      toast("Ticket closed");
+    } catch {
+      toast("Failed to update status", "error");
+    }
   };
 
   return (

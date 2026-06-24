@@ -2,9 +2,8 @@
 
 import { useState } from "react";
 import { useParams } from "next/navigation";
-import { useForm } from "react-hook-form";
-import { Button, Card, CardContent, CardHeader, CardTitle, Input, FormField, FormLabel, FormControl, FormMessage } from "@clarion/ui";
-import { PageHeader, ConfirmDialog } from "@/components/ui-helpers";
+import { Button, Card, CardContent, CardHeader, CardTitle, Input } from "@clarion/ui";
+import { PageHeader, ConfirmDialog, useToast } from "@/components/ui-helpers";
 import { TicketPriorityBadge, TicketStatusBadge, ComplaintStatusBadge } from "@/components/badges";
 import {
   useTicket, useAssignTicket, useUpdateTicketStatus,
@@ -12,6 +11,7 @@ import {
 } from "@/hooks/use-api";
 import { useAuthStore } from "@/stores/auth-store";
 import { TicketStatus, UserRole } from "@clarion/shared";
+import { ChevronRight } from "lucide-react";
 
 const STAFF_ROLES = [UserRole.ADMIN_STAFF, UserRole.DEPT_HEAD, UserRole.INSTITUTION_MGMT];
 
@@ -22,6 +22,20 @@ const NEXT_STATUSES: Record<string, TicketStatus[]> = {
   PENDING_INFO: [TicketStatus.IN_PROGRESS, TicketStatus.CLOSED],
   RESOLVED: [TicketStatus.CLOSED],
   CLOSED: [],
+};
+
+type StaffUser = {
+  id: string;
+  firstName: string;
+  lastName: string;
+  role: string;
+};
+
+type InternalNote = {
+  id: string;
+  content: string;
+  createdAt: string;
+  author: { firstName: string; lastName: string };
 };
 
 export default function StaffTicketDetailPage() {
@@ -40,42 +54,58 @@ export default function StaffTicketDetailPage() {
   const [confirmStatus, setConfirmStatus] = useState<TicketStatus | null>(null);
   const [noteText, setNoteText] = useState("");
 
-  const users = usersRes?.data ?? [];
+  const users = (usersRes?.data ?? []) as StaffUser[];
   const currentUser = useAuthStore((s) => s.user);
   const assignableUsers = users.filter(
-    (u: { id: string; role: string }) =>
+    (u) =>
       STAFF_ROLES.includes(u.role as UserRole) && u.id !== currentUser?.id
   );
-  const notes = notesRes?.data ?? [];
+  const notes = (notesRes?.data ?? []) as InternalNote[];
+  const toast = useToast();
 
-  if (isLoading) return <div className="h-64 rounded-lg bg-gray-100 animate-pulse" />;
+  if (isLoading) return <div className="h-64 rounded-xl bg-slate-50 dark:bg-slate-900/50 border border-slate-100 dark:border-slate-850 animate-pulse" />;
   if (!ticket) return <p className="text-sm text-muted-foreground">Ticket not found.</p>;
 
   const nextStatuses = NEXT_STATUSES[ticket.status] ?? [];
 
   const handleAssign = async () => {
     if (!assigneeId) return;
-    await assign({ id, data: { assigneeId } });
-    setAssigneeId("");
+    try {
+      await assign({ id, data: { assigneeId } });
+      setAssigneeId("");
+      toast("Ticket assigned successfully");
+    } catch {
+      toast("Failed to assign ticket", "error");
+    }
   };
 
   const handleStatusChange = async () => {
     if (!confirmStatus) return;
-    await updateStatus({ id, data: { status: confirmStatus } });
-    setConfirmStatus(null);
+    try {
+      await updateStatus({ id, data: { status: confirmStatus } });
+      setConfirmStatus(null);
+      toast(`Status updated to ${confirmStatus.replace(/_/g, " ")}`);
+    } catch {
+      toast("Failed to update status", "error");
+    }
   };
 
   const handleAddNote = async () => {
     if (!noteText.trim() || !complaintId) return;
-    await addNote({ id: complaintId, data: { content: noteText } });
-    setNoteText("");
+    try {
+      await addNote({ id: complaintId, data: { content: noteText } });
+      setNoteText("");
+      toast("Note added");
+    } catch {
+      toast("Failed to add note", "error");
+    }
   };
 
   return (
     <div className="max-w-3xl space-y-6">
       <PageHeader
         title={ticket.title}
-        description={ticket.referenceNumber}
+        description={`Ticket Reference: ${ticket.referenceNumber}`}
         action={
           <div className="flex items-center gap-2">
             <TicketPriorityBadge priority={ticket.priority} />
@@ -85,29 +115,31 @@ export default function StaffTicketDetailPage() {
       />
 
       {/* Complaint summary */}
-      <Card>
-        <CardHeader><CardTitle className="text-sm font-medium">Complaint</CardTitle></CardHeader>
-        <CardContent className="space-y-3 text-sm">
+      <Card className="border-border/80 shadow-sm bg-white dark:bg-slate-900/40">
+        <CardHeader className="pb-3 border-b border-slate-100 dark:border-slate-850">
+          <CardTitle className="text-xs font-semibold text-slate-400 dark:text-slate-500 uppercase tracking-wider">Complaint Details</CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-4 pt-5 text-sm">
           <div className="flex items-center gap-3">
             <ComplaintStatusBadge status={ticket.complaint.status} />
-            <span className="text-muted-foreground">{ticket.complaint.referenceNumber}</span>
+            <span className="text-xs font-semibold text-slate-400 tracking-wider uppercase">{ticket.complaint.referenceNumber}</span>
           </div>
-          <p className="text-clarion-navy-700">{ticket.complaint.description}</p>
-          <div className="grid grid-cols-2 gap-4">
+          <p className="text-slate-700 dark:text-slate-350 leading-relaxed whitespace-pre-wrap">{ticket.complaint.description}</p>
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-6 pt-4 border-t border-slate-100 dark:border-slate-800">
             <div>
               <p className="text-xs text-muted-foreground">Department</p>
-              <p className="font-medium">{ticket.department?.name ?? "—"}</p>
+              <p className="font-semibold text-slate-805 mt-1">{ticket.department?.name ?? "—"}</p>
             </div>
             <div>
               <p className="text-xs text-muted-foreground">Assignee</p>
-              <p className="font-medium">
+              <p className="font-semibold text-slate-805 mt-1">
                 {ticket.assignee ? `${ticket.assignee.firstName} ${ticket.assignee.lastName}` : "Unassigned"}
               </p>
             </div>
             {ticket.slaDeadline && (
               <div>
                 <p className="text-xs text-muted-foreground">SLA Deadline</p>
-                <p className={`font-medium ${ticket.slaBreached ? "text-red-600" : ""}`}>
+                <p className={`font-semibold mt-1 ${ticket.slaBreached ? "text-rose-600 dark:text-rose-400" : "text-slate-805"}`}>
                   {new Date(ticket.slaDeadline).toLocaleString()}
                   {ticket.slaBreached && " · BREACHED"}
                 </p>
@@ -118,22 +150,24 @@ export default function StaffTicketDetailPage() {
       </Card>
 
       {/* Assign */}
-      <Card>
-        <CardHeader><CardTitle className="text-sm font-medium">Assign Ticket</CardTitle></CardHeader>
-        <CardContent>
-          <div className="flex gap-3">
+      <Card className="border-border/80 shadow-sm">
+        <CardHeader className="pb-3 border-b border-slate-100 dark:border-slate-800">
+          <CardTitle className="text-xs font-semibold text-slate-400 dark:text-slate-500 uppercase tracking-wider">Assign Ticket</CardTitle>
+        </CardHeader>
+        <CardContent className="pt-5">
+          <div className="flex flex-col sm:flex-row gap-3">
             <select
-              className="flex-1 rounded-md border border-input bg-background px-3 py-2 text-sm"
+              className="flex-1 rounded-xl border border-input bg-background px-4 py-2.5 text-sm transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
               value={assigneeId}
               onChange={(e) => setAssigneeId(e.target.value)}
             >
               <option value="">Select staff member…</option>
-              {assignableUsers.map((u: { id: string; firstName: string; lastName: string; role: string }) => (
+              {assignableUsers.map((u) => (
                 <option key={u.id} value={u.id}>{u.firstName} {u.lastName} ({u.role.replace("_", " ")})</option>
               ))}
             </select>
-            <Button variant="accent" onClick={handleAssign} disabled={!assigneeId || assigning}>
-              {assigning ? "Assigning…" : "Assign"}
+            <Button variant="accent" onClick={handleAssign} disabled={!assigneeId || assigning} className="rounded-xl px-5">
+              {assigning ? "Assigning…" : "Assign Staff"}
             </Button>
           </div>
         </CardContent>
@@ -141,13 +175,22 @@ export default function StaffTicketDetailPage() {
 
       {/* Status transitions */}
       {nextStatuses.length > 0 && (
-        <Card>
-          <CardHeader><CardTitle className="text-sm font-medium">Update Status</CardTitle></CardHeader>
-          <CardContent>
-            <div className="flex flex-wrap gap-2">
+        <Card className="border-border/80 shadow-sm">
+          <CardHeader className="pb-3 border-b border-slate-100 dark:border-slate-800">
+            <CardTitle className="text-xs font-semibold text-slate-400 dark:text-slate-500 uppercase tracking-wider">Update Ticket Status</CardTitle>
+          </CardHeader>
+          <CardContent className="pt-5">
+            <div className="flex flex-wrap gap-2.5">
               {nextStatuses.map((s) => (
-                <Button key={s} variant="outline" size="sm" onClick={() => setConfirmStatus(s)}>
-                  → {s.replace("_", " ")}
+                <Button 
+                  key={s} 
+                  variant="outline" 
+                  size="sm" 
+                  onClick={() => setConfirmStatus(s)}
+                  className="rounded-xl border-border/80 hover:border-slate-300 dark:hover:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800/50 hover:translate-x-0.5 transition-all duration-200 gap-1.5"
+                >
+                  <ChevronRight className="h-3.5 w-3.5 text-slate-400" />
+                  {s.replace("_", " ")}
                 </Button>
               ))}
             </div>
@@ -156,29 +199,38 @@ export default function StaffTicketDetailPage() {
       )}
 
       {/* Internal notes */}
-      <Card>
-        <CardHeader><CardTitle className="text-sm font-medium">Internal Notes</CardTitle></CardHeader>
-        <CardContent className="space-y-4">
-          {notes.length === 0
-            ? <p className="text-sm text-muted-foreground">No notes yet.</p>
-            : notes.map((n: { id: string; content: string; createdAt: string; author: { firstName: string; lastName: string } }) => (
-              <div key={n.id} className="rounded-lg bg-gray-50 p-3">
-                <p className="text-sm text-clarion-navy-800">{n.content}</p>
-                <p className="text-xs text-muted-foreground mt-1">
-                  {n.author.firstName} {n.author.lastName} · {new Date(n.createdAt).toLocaleString()}
-                </p>
-              </div>
-            ))}
+      <Card className="border-border/80 shadow-sm">
+        <CardHeader className="pb-3 border-b border-slate-100 dark:border-slate-800">
+          <CardTitle className="text-xs font-semibold text-slate-400 dark:text-slate-500 uppercase tracking-wider">Internal Team Notes</CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-4 pt-5">
+          {notes.length === 0 ? (
+            <p className="text-sm text-muted-foreground py-2">No internal team notes yet.</p>
+          ) : (
+            <div className="space-y-3">
+              {notes.map((n) => (
+                <div key={n.id} className="rounded-2xl border border-slate-100 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/30 p-4 animate-in fade-in duration-200">
+                  <p className="text-sm text-slate-800 dark:text-slate-200 leading-relaxed">{n.content}</p>
+                  <p className="text-[11px] font-medium text-slate-400 dark:text-slate-500 mt-2 flex items-center gap-1.5">
+                    <span className="font-semibold text-slate-650 dark:text-slate-405">{n.author.firstName} {n.author.lastName}</span>
+                    <span>·</span>
+                    <span>{new Date(n.createdAt).toLocaleString()}</span>
+                  </p>
+                </div>
+              ))}
+            </div>
+          )}
 
           {complaintId && (
-            <div className="flex gap-3 pt-2 border-t">
+            <div className="flex gap-3 pt-4 border-t border-slate-100 dark:border-slate-800">
               <Input
-                placeholder="Add an internal note…"
+                placeholder="Add an internal note (only visible to staff)…"
                 value={noteText}
                 onChange={(e) => setNoteText(e.target.value)}
+                className="rounded-xl flex-1 focus-visible:ring-ring focus-visible:ring-offset-2"
               />
-              <Button variant="outline" onClick={handleAddNote} disabled={!noteText.trim() || addingNote}>
-                {addingNote ? "Adding…" : "Add"}
+              <Button variant="outline" onClick={handleAddNote} disabled={!noteText.trim() || addingNote} className="rounded-xl px-5 border-border/80 hover:bg-slate-50 dark:hover:bg-slate-800/60">
+                {addingNote ? "Adding…" : "Add Note"}
               </Button>
             </div>
           )}
@@ -189,7 +241,7 @@ export default function StaffTicketDetailPage() {
         open={!!confirmStatus}
         title="Update ticket status"
         description={`Move this ticket to "${confirmStatus?.replace("_", " ")}"?`}
-        confirmLabel="Update"
+        confirmLabel="Update Status"
         onConfirm={handleStatusChange}
         onCancel={() => setConfirmStatus(null)}
         loading={updatingStatus}

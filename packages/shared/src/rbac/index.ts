@@ -39,7 +39,8 @@ export enum Permission {
   CHAT = "chat",
 
   // Analytics
-  ANALYTICS_VIEW = "analytics:view",
+  ANALYTICS_VIEW = "analytics:view",           // dept head+
+  ANALYTICS_VIEW_INST = "analytics:view:inst", // inst mgmt+
   ANALYTICS_EXPORT = "analytics:export",
 
   // System
@@ -125,6 +126,7 @@ export const rolePermissions: Record<UserRole, Permission[]> = {
     Permission.KB_WRITE,
     Permission.KB_PUBLISH,
     Permission.ANALYTICS_VIEW,
+    Permission.ANALYTICS_VIEW_INST,
     Permission.ANALYTICS_EXPORT,
     Permission.AUDIT_READ,
     Permission.CHAT,

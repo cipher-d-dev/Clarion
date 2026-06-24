@@ -16,7 +16,7 @@ export class NotificationsController {
 
   markRead = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      await this.service.markRead(req.params.id!, req.user!.sub);
+      await this.service.markRead(String(req.params.id), req.user!.sub);
       sendSuccess(res, { ok: true });
     } catch (err) { next(err); }
   };

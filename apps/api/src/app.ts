@@ -1,6 +1,8 @@
 import express, { type Express } from "express";
 import cors from "cors";
 import helmet from "helmet";
+import * as Sentry from "@sentry/node";
+import path from "path";
 import { env } from "./config/env.js";
 import { errorHandler } from "./middleware/error-handler.js";
 import { rateLimiter } from "./middleware/rate-limit.js";
@@ -12,6 +14,9 @@ import { createUsersRouter } from "./modules/users/users.routes.js";
 import { createKnowledgeBaseRouter } from "./modules/knowledge-base/knowledge-base.routes.js";
 import { createChatbotRouter } from "./modules/chatbot/chatbot.routes.js";
 import { createNotificationsRouter } from "./modules/notifications/notifications.routes.js";
+import { createAnalyticsRouter } from "./modules/analytics/analytics.routes.js";
+import { createAuditRouter } from "./modules/audit/audit.routes.js";
+import { createAdminRouter } from "./modules/admin/admin.routes.js";
 import {
   complaintsController,
   ticketsController,
@@ -19,6 +24,9 @@ import {
   kbController,
   chatbotController,
   notificationsController,
+  analyticsController,
+  auditController,
+  adminController,
 } from "./container.js";
 
 export function createApp(): Express {
@@ -30,6 +38,9 @@ export function createApp(): Express {
   app.use(express.urlencoded({ extended: true }));
   app.use(rateLimiter);
 
+  // Serve uploaded files
+  app.use("/uploads", express.static(path.join(process.cwd(), "uploads")));
+
   app.use("/v1/health", healthRouter);
   app.use("/v1/auth", authRouter);
   app.use("/v1/complaints", createComplaintsRouter(complaintsController));
@@ -38,6 +49,14 @@ export function createApp(): Express {
   app.use("/v1/knowledge", createKnowledgeBaseRouter(kbController));
   app.use("/v1/chat", createChatbotRouter(chatbotController));
   app.use("/v1/notifications", createNotificationsRouter(notificationsController));
+  app.use("/v1/analytics", createAnalyticsRouter(analyticsController));
+  app.use("/v1/audit", createAuditRouter(auditController));
+  app.use("/v1/admin", createAdminRouter(adminController));
+
+  // Sentry error capture — must be after routes, before custom error handler
+  if (process.env.SENTRY_DSN) {
+    Sentry.setupExpressErrorHandler(app);
+  }
 
   app.use(errorHandler);
 

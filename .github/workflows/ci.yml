@@ -64,5 +64,8 @@ jobs:
       - name: Typecheck
         run: pnpm typecheck
 
+      - name: Audit dependencies
+        run: pnpm audit --audit-level=high
+
       - name: Build
         run: pnpm build

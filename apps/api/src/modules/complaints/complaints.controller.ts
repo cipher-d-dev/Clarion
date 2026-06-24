@@ -97,4 +97,35 @@ export class ComplaintsController {
       sendSuccess(res, notes);
     } catch (err) { next(err); }
   };
+
+  uploadAttachment = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const file = (req as any).file as Express.Multer.File | undefined;
+      if (!file) {
+        res.status(400).json({ success: false, error: { code: "NO_FILE", message: "No file uploaded" } });
+        return;
+      }
+      const attachment = await this.service.addAttachment(
+        String(req.params.id),
+        req.user!.institutionId!,
+        req.user!.sub,
+        file,
+        {
+          ipAddress: req.ip,
+          userAgent: req.get("user-agent"),
+        },
+      );
+      sendSuccess(res, attachment, 201);
+    } catch (err) { next(err); }
+  };
+
+  getAttachments = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const attachments = await this.service.getAttachments(
+        String(req.params.id),
+        req.user!.institutionId!,
+      );
+      sendSuccess(res, attachments);
+    } catch (err) { next(err); }
+  };
 }

@@ -60,6 +60,26 @@ const post = <T>(path: string, body: unknown, token?: string) =>
 const patch = <T>(path: string, body: unknown, token?: string) =>
   request<T>(path, { method: "PATCH", body: JSON.stringify(body), token });
 
+async function upload<T>(path: string, formData: FormData, token: string): Promise<{ data: T; meta?: PaginationMeta }> {
+  const response = await fetch(`${API_URL}${path}`, {
+    method: "POST",
+    headers: { Authorization: `Bearer ${token}` },
+    body: formData,
+  });
+  const body = (await response.json()) as ApiResponse<T>;
+
+  if (!response.ok || !body.success) {
+    throw new ApiClientError(
+      body.error?.code ?? "UNKNOWN_ERROR",
+      body.error?.message ?? "An error occurred",
+      response.status,
+      body.error?.details,
+    );
+  }
+
+  return { data: body.data as T, meta: body.meta };
+}
+
 function buildQuery(params: Record<string, unknown>): string {
   const q = new URLSearchParams();
   for (const [k, v] of Object.entries(params)) {
@@ -98,6 +118,13 @@ export const api = {
     post<R>(`/v1/complaints/${id}/notes`, data, token),
   rateComplaint: (id: string, data: RateComplaintInput, token: string) =>
     post<R>(`/v1/complaints/${id}/rate`, data, token),
+  getComplaintAttachments: (id: string, token: string) =>
+    get<R[]>(`/v1/complaints/${id}/attachments`, token),
+  uploadComplaintAttachment: (id: string, file: File, token: string) => {
+    const formData = new FormData();
+    formData.set("file", file);
+    return upload<R>(`/v1/complaints/${id}/attachments`, formData, token);
+  },
 
   // Tickets
   getTickets: (filters: Partial<R>, token: string) =>
@@ -120,6 +147,17 @@ export const api = {
   sendChatMessage: (data: { message: string; complaintId?: string }, token: string) =>
     post<{ message: string; sources?: string[] }>("/v1/chat", data, token),
 
+  // Analytics
+  getAnalyticsOverview: (token: string) => get<R>("/v1/analytics/overview", token),
+  getAnalyticsComplaints: (token: string, from?: string, to?: string) =>
+    get<R>(`/v1/analytics/complaints${buildQuery({ from, to })}`, token),
+  getAnalyticsDepartments: (token: string) => get<R[]>("/v1/analytics/departments", token),
+  getAnalyticsSLA: (token: string) => get<R>("/v1/analytics/sla", token),
+  getAnalyticsTrends: (token: string, days?: number) =>
+    get<R[]>(`/v1/analytics/trends${buildQuery({ days })}`, token),
+  getAnalyticsStaff: (token: string) => get<R[]>("/v1/analytics/staff", token),
+  getAnalyticsAiInsights: (token: string) => get<R>("/v1/analytics/ai-insights", token),
+
   // Notifications
   getNotifications: (token: string, page = 1) =>
     get<R[]>(`/v1/notifications?page=${page}`, token),
@@ -129,4 +167,18 @@ export const api = {
     patch<{ ok: boolean }>(`/v1/notifications/${id}/read`, {}, token),
   markAllNotificationsRead: (token: string) =>
     patch<{ ok: boolean }>("/v1/notifications/read-all", {}, token),
+
+  // Super admin
+  getAuditLogs: (filters: Partial<R>, token: string) =>
+    get<R[]>(`/v1/audit${buildQuery(filters)}`, token),
+  getAdminInstitutions: (filters: Partial<R>, token: string) =>
+    get<R[]>(`/v1/admin/institutions${buildQuery(filters)}`, token),
+  createAdminInstitution: (data: { name: string; slug: string; domain?: string }, token: string) =>
+    post<R>("/v1/admin/institutions", data, token),
+  updateAdminInstitution: (id: string, data: { isActive: boolean }, token: string) =>
+    patch<R>(`/v1/admin/institutions/${id}`, data, token),
+  getAdminUsers: (filters: Partial<R>, token: string) =>
+    get<R[]>(`/v1/admin/users${buildQuery(filters)}`, token),
+  updateAdminUser: (id: string, data: Partial<R>, token: string) =>
+    patch<R>(`/v1/admin/users/${id}`, data, token),
 };

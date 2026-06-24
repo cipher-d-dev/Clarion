@@ -154,4 +154,15 @@ export class ComplaintsRepository {
     });
     return last?.referenceNumber ?? null;
   }
+
+  async createAttachment(data: { complaintId: string; fileName: string; fileUrl: string; mimeType: string; fileSize: number }) {
+    return this.db.complaintAttachment.create({ data });
+  }
+
+  async getAttachments(complaintId: string) {
+    return this.db.complaintAttachment.findMany({
+      where: { complaintId },
+      orderBy: { uploadedAt: "asc" },
+    });
+  }
 }

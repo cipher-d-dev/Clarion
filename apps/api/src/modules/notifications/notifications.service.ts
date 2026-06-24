@@ -60,6 +60,22 @@ export class NotificationsService {
 
   // ── Convenience senders ───────────────────────────────────────────────────
 
+  async notifyComplaintSubmitted(
+    institutionId: string,
+    userId: string,
+    referenceNumber: string,
+    complaintId: string,
+  ) {
+    return this.send({
+      institutionId,
+      userId,
+      type: NotificationType.COMPLAINT_UPDATE,
+      title: "Complaint submitted",
+      message: `Your complaint ${referenceNumber} has been submitted and is under review.`,
+      metadata: { complaintId },
+    });
+  }
+
   async notifyComplaintUpdate(
     institutionId: string,
     userId: string,
