@@ -3,6 +3,8 @@ import { IBM_Plex_Sans } from "next/font/google";
 import { QueryProvider } from "@/providers/query-provider";
 import { ThemeProvider } from "@/providers/theme-provider";
 import "./globals.css";
+import logoImg from "@/assets/logo.svg";
+
 
 const ibmPlexSans = IBM_Plex_Sans({
   variable: "--font-sans",
@@ -15,6 +17,9 @@ export const metadata: Metadata = {
   title: "Clarion — Institutional Complaint Management",
   description:
     "Transform how your institution handles complaints. AI-powered routing, transparent resolution, and actionable insights.",
+  icons: {
+    icon: logoImg.src, // Put this file in your /public folder
+  }
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
