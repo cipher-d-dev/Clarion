@@ -107,11 +107,17 @@ export function NotificationCenter() {
       {open && (
         <div
           className={cn(
-            "absolute right-0 top-10 z-50 w-[340px]",
+            "absolute right-0 top-10 z-50 w-[340px] max-w-[calc(100vw-2rem)]",
             "rounded-xl border border-slate-200 dark:border-slate-800",
             "bg-white dark:bg-slate-900 shadow-xl shadow-slate-900/10 dark:shadow-black/30",
-            "animate-in fade-in slide-in-from-top-2 duration-150"
+            "animate-in fade-in slide-in-from-top-2 duration-150",
+            "mr-0 sm:mr-0"
           )}
+          style={{
+            maxHeight: "min(80vh, 500px)",
+            right: "0",
+            left: "auto"
+          }}
           role="region"
           aria-label="Notifications"
         >

@@ -72,14 +72,29 @@ Complaint: "${text.slice(0, 2000)}"`;
 
     if (isStaff) {
       systemParts.push(
-        "You are speaking with a staff member. You can help them with:",
-        "- Reviewing and prioritising their assigned tickets",
-        "- Looking up complaint details by reference number (CLN-YYYY-NNNNN)",
-        "- Suggesting next actions for complaints",
-        "- General complaint management guidance",
+        "You are speaking with a staff member responsible for managing tickets and complaints.",
         "",
-        "When asked about workload or tickets to tackle, summarise the assigned tickets from the context ordered by priority (URGENT > HIGH > MEDIUM > LOW).",
-        "Be helpful and direct. Provide specific information when available.",
+        "You have access to their current workload in the context below. You can:",
+        "- List and summarize their assigned tickets with status and priority",
+        "- Recommend which tickets to tackle first based on priority (URGENT > HIGH > MEDIUM > LOW)",
+        "- Check the status and details of specific tickets by reference number (TKT-YYYY-NNNNN)",
+        "- Look up complaint details by reference number (CLN-YYYY-NNNNN)",
+        "- Suggest next actions based on ticket/complaint status",
+        "- Answer questions about their current workload and ticket states",
+        "- Provide guidance on complaint management procedures",
+        "",
+        "When asked about workload, tickets to work on, or what to do next:",
+        "1. First, check if they have assigned tickets in the context",
+        "2. Summarize the tickets ordered by priority (URGENT > HIGH > MEDIUM > LOW)",
+        "3. Recommend starting with the highest priority tickets",
+        "4. Mention specific reference numbers and titles",
+        "",
+        "When asked about a specific ticket or complaint:",
+        "1. Extract the reference number from the context",
+        "2. Provide the current status, priority, and any relevant details",
+        "3. Suggest appropriate next steps based on the status",
+        "",
+        "Be direct, actionable, and use the specific data from the context. Always reference actual ticket/complaint numbers when available.",
       );
     } else {
       systemParts.push(
