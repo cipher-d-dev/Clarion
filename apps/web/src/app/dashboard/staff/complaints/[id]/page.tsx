@@ -70,8 +70,8 @@ function eventIcon(type: string) {
 
 function Section({ title, icon, children, action }: { title: string; icon?: React.ReactNode; children: React.ReactNode; action?: React.ReactNode }) {
   return (
-    <div className="rounded-xl border border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-900/60 overflow-hidden shadow-sm">
-      <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 px-6 py-3.5">
+    <div className="rounded-2xl border border-slate-200/60 dark:border-white/[0.07] bg-white dark:bg-[#111113] overflow-hidden shadow-sm">
+      <div className="flex items-center justify-between border-b border-slate-100/80 dark:border-white/[0.05] px-6 py-3.5">
         <h2 className="flex items-center gap-2 text-[11px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">
           {icon}
           {title}
@@ -90,7 +90,7 @@ const STATUS_INTENT: Record<string, string> = {
   AWAITING_INFORMATION: "border-yellow-200 bg-yellow-50 text-yellow-800 hover:bg-yellow-100 dark:border-yellow-900/40 dark:bg-yellow-950/20 dark:text-yellow-300",
   ESCALATED: "border-rose-200 bg-rose-50 text-rose-800 hover:bg-rose-100 dark:border-rose-900/40 dark:bg-rose-950/20 dark:text-rose-300",
   RESOLVED: "border-emerald-200 bg-emerald-50 text-emerald-800 hover:bg-emerald-100 dark:border-emerald-900/40 dark:bg-emerald-950/20 dark:text-emerald-300",
-  CLOSED: "border-slate-200 bg-slate-50 text-slate-700 hover:bg-slate-100 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-400",
+  CLOSED: "border-slate-200 bg-slate-50 text-slate-700 hover:bg-slate-100 dark:border-slate-700 dark:bg-[#111113] dark:text-slate-400",
   REJECTED: "border-red-200 bg-red-50 text-red-800 hover:bg-red-100 dark:border-red-900/40 dark:bg-red-950/20 dark:text-red-300",
 };
 
@@ -177,9 +177,9 @@ export default function StaffComplaintDetailPage() {
             </div>
           ))}
         </div>
-        <div className="border-t border-slate-100 dark:border-slate-800 pt-5">
+        <div className="border-t border-slate-100 dark:border-white/[0.05] pt-5">
           <p className="text-[10.5px] font-semibold uppercase tracking-wider text-slate-400 dark:text-slate-500 mb-2">Description</p>
-          <p className="text-[13.5px] leading-relaxed text-slate-700 dark:text-slate-300 whitespace-pre-wrap">{complaint.description}</p>
+          <p className="text-[13.5px] leading-relaxed text-slate-700 dark:text-slate-200 whitespace-pre-wrap">{complaint.description}</p>
         </div>
       </Section>
 
@@ -220,7 +220,7 @@ export default function StaffComplaintDetailPage() {
             <p className="text-sm text-slate-400 dark:text-slate-500">No notes yet.</p>
           ) : (
             notes.map((n) => (
-              <div key={n.id} className="rounded-lg border border-slate-100 bg-slate-50 dark:border-slate-800 dark:bg-slate-900/50 p-4">
+              <div key={n.id} className="rounded-xl border border-slate-100 dark:border-white/[0.06] bg-slate-50 dark:bg-white/[0.03] p-4">
                 <p className="text-[13.5px] text-slate-800 dark:text-slate-200 leading-relaxed">{n.content}</p>
                 <p className="text-[11px] text-slate-400 dark:text-slate-500 mt-2">
                   <span className="font-medium">{n.author.firstName} {n.author.lastName}</span>
@@ -230,7 +230,7 @@ export default function StaffComplaintDetailPage() {
             ))
           )}
         </div>
-        <div className="flex gap-2.5 border-t border-slate-100 dark:border-slate-800 pt-4">
+        <div className="flex gap-2.5 border-t border-slate-100 dark:border-white/[0.05] pt-4">
           <Input
             placeholder="Add an internal note…"
             value={noteText}
@@ -256,10 +256,10 @@ export default function StaffComplaintDetailPage() {
           <p className="text-sm text-slate-400 dark:text-slate-500">No activity yet.</p>
         ) : (
           <div className="relative space-y-5 pl-9">
-            <div className="absolute left-[14px] top-2 bottom-2 w-px bg-slate-100 dark:bg-slate-800" />
+            <div className="absolute left-[14px] top-2 bottom-2 w-px bg-slate-100 dark:bg-white/[0.06]" />
             {timeline.map((e) => (
               <div key={e.id} className="relative">
-                <div className="absolute -left-9 flex h-7 w-7 items-center justify-center rounded-lg border border-slate-100 bg-white dark:border-slate-800 dark:bg-slate-900 shadow-sm z-10">
+                <div className="absolute -left-9 flex h-7 w-7 items-center justify-center rounded-lg border border-slate-100 dark:border-white/[0.07] bg-white dark:bg-[#111113] shadow-sm z-10">
                   {eventIcon(e.eventType)}
                 </div>
                 <div className="pt-0.5 min-w-0">

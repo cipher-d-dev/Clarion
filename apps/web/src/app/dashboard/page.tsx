@@ -18,7 +18,7 @@ export default function DashboardIndexPage() {
 
   return (
     <div className="flex items-center justify-center py-20">
-      <div className="h-8 w-8 animate-spin rounded-full border-4 border-clarion-navy-200 border-t-clarion-navy-800" />
+      <div className="h-8 w-8 animate-spin rounded-full border-4 border-slate-700 border-t-slate-700" />
     </div>
   );
 }

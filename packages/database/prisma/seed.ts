@@ -149,10 +149,79 @@ async function main() {
     });
   }
 
+  // Seed complaints + tickets so dashboards have data
+  const seededUsers = await prisma.user.findMany({
+    where: { institutionId: institution.id },
+    select: { id: true, email: true, role: true, departmentId: true },
+  });
+
+  const studentUser = seededUsers.find(u => u.role === UserRole.STUDENT)!;
+  const staffUser   = seededUsers.find(u => u.role === UserRole.ADMIN_STAFF)!;
+
+  const complaintSeeds = [
+    { title: "Grade appeal for CSC301", description: "My grade was recorded incorrectly for CSC301 final exam. I scored 74 but 64 was entered.", category: "Academic", status: "SUBMITTED" as const },
+    { title: "Library access denied", description: "Unable to access the e-library portal since last week despite having a valid student ID.", category: "Facilities", status: "UNDER_REVIEW" as const },
+    { title: "Missing coursework marks", description: "Coursework submission for CSC401 was not recorded. I have proof of submission.", category: "Academic", status: "IN_PROGRESS" as const },
+    { title: "Hostel maintenance issue", description: "Bathroom fixtures in Block C room 14 have been broken for over two weeks with no response.", category: "Facilities", status: "RESOLVED" as const },
+    { title: "Scholarship application rejected", description: "My scholarship application was rejected without reason. I meet all stated criteria.", category: "Financial", status: "ASSIGNED" as const },
+  ];
+
+  for (let i = 0; i < complaintSeeds.length; i++) {
+    const cs = complaintSeeds[i];
+    const refNumber = `CLN-2026-${String(i + 1).padStart(5, "0")}`;
+
+    const existing = await prisma.complaint.findFirst({ where: { institutionId: institution.id, referenceNumber: refNumber } });
+    if (existing) continue;
+
+    const complaint = await prisma.complaint.create({
+      data: {
+        institutionId: institution.id,
+        departmentId: csDept.id,
+        submitterId: studentUser.id,
+        referenceNumber: refNumber,
+        title: cs.title,
+        description: cs.description,
+        category: cs.category,
+        status: cs.status,
+        isAnonymous: false,
+      },
+    });
+
+    await prisma.timelineEvent.create({
+      data: {
+        complaintId: complaint.id,
+        actorId: studentUser.id,
+        eventType: "COMPLAINT_SUBMITTED",
+        description: "Complaint submitted",
+      },
+    });
+
+    // Create a ticket for non-draft, non-submitted complaints
+    if (!["DRAFT", "SUBMITTED"].includes(cs.status)) {
+      await prisma.ticket.create({
+        data: {
+          institutionId: institution.id,
+          departmentId: csDept.id,
+          complaintId: complaint.id,
+          assigneeId: staffUser.id,
+          referenceNumber: `TKT-2026-${String(i + 1).padStart(5, "0")}`,
+          title: cs.title,
+          description: cs.description,
+          priority: i % 2 === 0 ? "HIGH" : "MEDIUM",
+          severity: "MODERATE",
+          status: cs.status === "RESOLVED" ? "RESOLVED" : cs.status === "IN_PROGRESS" ? "IN_PROGRESS" : "ASSIGNED",
+          slaDeadline: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+          slaBreached: false,
+        },
+      });
+    }
+  }
+
   console.log("✅ Seed complete!");
   console.log(`   Institution: ${institution.name} (${institution.slug})`);
   console.log(`   Departments: ${departments.length}`);
   console.log(`   Users: ${users.length}`);
+  console.log(`   Complaints: ${complaintSeeds.length}`);
   console.log(`   Default password: ${DEFAULT_PASSWORD}`);
 }
 

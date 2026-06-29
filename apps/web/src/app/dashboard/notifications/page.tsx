@@ -74,7 +74,7 @@ export default function NotificationsPage() {
             <EmptyState
               title="No notifications"
               description="You'll see updates about your complaints and tickets here."
-              action={<Bell className="h-8 w-8 text-clarion-navy-200" />}
+              action={<Bell className="h-8 w-8 text-slate-700" />}
             />
           ) : (
             <ul className="divide-y divide-gray-100">
@@ -85,7 +85,7 @@ export default function NotificationsPage() {
                     <button
                       onClick={() => handleClick(n)}
                       className={cn(
-                        "w-full px-5 py-4 text-left transition-colors hover:bg-gray-50",
+                        "w-full px-5 py-4 text-left transition-colors hover:bg-slate-50 dark:hover:bg-white/[0.02]",
                         !n.isRead && "bg-blue-50 hover:bg-blue-50/80",
                         !href && "cursor-default",
                       )}
@@ -95,14 +95,14 @@ export default function NotificationsPage() {
                           <span className="mt-1.5 h-2 w-2 shrink-0 rounded-full bg-blue-500" />
                         )}
                         <div className={cn("min-w-0 flex-1", n.isRead && "pl-5")}>
-                          <p className="text-sm font-medium text-clarion-navy-800 truncate">{n.title}</p>
-                          <p className="mt-0.5 text-sm text-clarion-navy-600">{n.message}</p>
+                          <p className="text-sm font-medium text-slate-800 dark:text-slate-100 truncate">{n.title}</p>
+                          <p className="mt-0.5 text-sm text-indigo-600 dark:text-indigo-400">{n.message}</p>
                           <p className="mt-1 text-xs text-muted-foreground">
                             {new Date(n.createdAt).toLocaleString()}
                           </p>
                         </div>
                         {href && (
-                          <span className="shrink-0 text-xs text-clarion-navy-400">View →</span>
+                          <span className="shrink-0 text-xs text-slate-700">View →</span>
                         )}
                       </div>
                     </button>

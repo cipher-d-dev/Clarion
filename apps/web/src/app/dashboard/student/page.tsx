@@ -17,21 +17,21 @@ function ComplaintCard({ c }: { c: { id: string; title: string; referenceNumber:
       className={cn(
         "group flex items-center justify-between rounded-xl border px-5 py-4 transition-all duration-150 hover:-translate-y-0.5",
         isActive
-          ? "border-slate-200 bg-white hover:border-slate-300 hover:shadow-sm dark:border-slate-800 dark:bg-slate-900/60 dark:hover:border-slate-700"
-          : "border-slate-100 bg-slate-50/50 hover:border-slate-200 dark:border-slate-800/60 dark:bg-slate-900/30"
+          ? "border-slate-200 bg-white hover:border-slate-300 hover:shadow-sm dark:border-white/[0.07] dark:bg-[#111113] dark:hover:border-slate-700"
+          : "border-slate-100 bg-slate-50/50 hover:border-slate-200 dark:border-white/[0.07]/60 dark:bg-[#111113]/30"
       )}
     >
       <div className="flex items-center gap-4 min-w-0">
         <div className={cn(
           "flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border",
           isActive
-            ? "border-clarion-navy-100 bg-clarion-navy-50 text-clarion-navy-600 dark:border-slate-800 dark:bg-slate-800 dark:text-slate-400"
-            : "border-slate-200 bg-white text-slate-400 dark:border-slate-800 dark:bg-slate-900"
+            ? "border-indigo-100/50 bg-indigo-50 text-indigo-600 dark:text-indigo-400 dark:border-white/[0.07] dark:bg-slate-800 dark:text-slate-400"
+            : "border-slate-200 bg-white text-slate-400 dark:border-white/[0.07] dark:bg-[#111113]"
         )}>
           <FileText className="h-4 w-4" />
         </div>
         <div className="min-w-0">
-          <p className="text-[13.5px] font-semibold text-slate-800 dark:text-slate-100 truncate leading-snug group-hover:text-clarion-navy-800 dark:group-hover:text-slate-50 transition-colors">
+          <p className="text-[13.5px] font-semibold text-slate-800 dark:text-slate-100 truncate leading-snug group-hover:text-slate-800 dark:text-slate-100 dark:group-hover:text-slate-50 transition-colors">
             {c.title}
           </p>
           <div className="flex items-center gap-2 mt-0.5">
@@ -108,7 +108,7 @@ export default function StudentOverviewPage() {
           <h2 className="text-sm font-semibold text-slate-700 dark:text-slate-300">Recent Complaints</h2>
           <Link
             href="/dashboard/student/complaints"
-            className="flex items-center gap-1 text-xs font-medium text-clarion-navy-600 dark:text-clarion-navy-300 hover:text-clarion-navy-800 dark:hover:text-clarion-navy-100 transition-colors"
+            className="flex items-center gap-1 text-xs font-medium text-indigo-600 dark:text-indigo-400 dark:text-slate-700 hover:text-slate-800 dark:text-slate-100 dark:hover:text-indigo-100/50 transition-colors"
           >
             View all <ArrowRight className="h-3 w-3" />
           </Link>

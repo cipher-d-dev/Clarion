@@ -38,7 +38,7 @@ export default function ManagementComplaintDetailPage() {
         {c.isAnonymous && <span className="rounded-full bg-amber-50 px-2 py-0.5 text-xs text-amber-700">Anonymous</span>}
       </div>
 
-      <div className="rounded-lg border border-gray-100 bg-white p-4">
+      <div className="rounded-2xl border border-slate-200/60 dark:border-white/[0.06] bg-white dark:bg-[#111113] p-4">
         <p className="text-sm text-gray-700 whitespace-pre-wrap">{c.description}</p>
       </div>
 
@@ -46,13 +46,13 @@ export default function ManagementComplaintDetailPage() {
 
       {timeline.length > 0 && (
         <div>
-          <h2 className="mb-3 text-sm font-semibold text-clarion-navy-700">Timeline</h2>
+          <h2 className="mb-3 text-sm font-semibold text-slate-700 dark:text-slate-200">Timeline</h2>
           <ol className="space-y-3">
             {timeline.map((ev) => (
               <li key={ev.id} className="flex gap-3 text-sm">
-                <span className="mt-1 h-2 w-2 shrink-0 rounded-full bg-clarion-navy-300" />
+                <span className="mt-1 h-2 w-2 shrink-0 rounded-full bg-slate-700" />
                 <div>
-                  <p className="text-clarion-navy-800">{ev.description}</p>
+                  <p className="text-slate-800 dark:text-slate-100">{ev.description}</p>
                   <p className="text-xs text-muted-foreground">{new Date(ev.createdAt).toLocaleString()}</p>
                 </div>
               </li>

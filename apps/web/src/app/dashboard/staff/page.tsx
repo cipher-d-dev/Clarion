@@ -26,15 +26,15 @@ export default function StaffOverviewPage() {
 
       <div>
         <div className="mb-3 flex items-center justify-between">
-          <h2 className="text-sm font-semibold text-clarion-navy-700">Recent Tickets</h2>
-          <Link href="/dashboard/staff/tickets" className="text-xs text-clarion-navy-500 hover:underline">View all</Link>
+          <h2 className="text-sm font-semibold text-slate-700 dark:text-slate-200">Recent Tickets</h2>
+          <Link href="/dashboard/staff/tickets" className="text-xs text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:underline transition-colors">View all</Link>
         </div>
         <div className="space-y-2">
           {items.map((t) => (
             <Link key={t.id} href={`/dashboard/staff/tickets/${t.id}`}
-              className="flex items-center justify-between rounded-lg border border-gray-100 bg-white px-4 py-3 hover:bg-gray-50">
+              className="flex items-center justify-between flex items-center justify-between rounded-xl border border-slate-200/60 dark:border-white/[0.06] bg-white dark:bg-[#111113] px-4 py-3 hover:bg-slate-50 dark:hover:bg-white/[0.03] transition-colors">
               <div className="min-w-0">
-                <p className="text-sm font-medium text-clarion-navy-800 truncate">{t.title}</p>
+                <p className="text-sm font-medium text-slate-800 dark:text-slate-100 truncate">{t.title}</p>
                 <p className="text-xs text-muted-foreground">{t.referenceNumber}</p>
               </div>
               <div className="flex items-center gap-2 ml-4">

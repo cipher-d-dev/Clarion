@@ -73,22 +73,22 @@ export default function LandingPage() {
       {/* ── Nav ──────────────────────────────────────────────────────── */}
       <nav className="fixed top-0 z-50 w-full border-b border-slate-200/60 bg-white/85 backdrop-blur-xl dark:border-white/[0.06] dark:bg-[#0a0a0a]/85">
         <div className="mx-auto flex h-14 max-w-6xl items-center justify-between px-6">
-          <Link href="/" className="flex items-center gap-2" aria-label="Clarion home">
+          <Link href="/" className="flex items-center gap-2 min-h-[44px]" aria-label="Clarion home">
             <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-slate-900 dark:bg-white shadow-sm">
-              <span className="text-[11px] font-bold text-clarion-amber-400 dark:text-clarion-navy-900">C</span>
+              <span className="text-[11px] font-bold text-clarion-amber-400 dark:text-slate-700" aria-hidden="true">C</span>
             </div>
             <span className="text-[15px] font-semibold tracking-tight">Clarion</span>
           </Link>
           <div className="flex items-center gap-1.5">
             <ThemeToggle />
-            <Link href="/login">
-              <Button variant="ghost" size="sm" className="text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100">
+            <Link href="/login" className="hidden sm:inline-block">
+              <Button variant="ghost" size="sm" className="text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 min-h-[44px] cursor-pointer transition-colors duration-200">
                 Sign in
               </Button>
             </Link>
             <Link href="/register">
-              <Button size="sm" className="gap-1.5 bg-slate-900 text-white hover:bg-slate-700 dark:bg-white dark:text-slate-900 dark:hover:bg-slate-100">
-                Get started <ArrowRight className="h-3.5 w-3.5" />
+              <Button size="sm" className="gap-1.5 bg-slate-900 text-white hover:bg-slate-700 dark:bg-white dark:text-slate-900 dark:hover:bg-slate-100 min-h-[44px] cursor-pointer transition-all duration-200">
+                Get started <ArrowRight className="h-3.5 w-3.5" aria-hidden="true" />
               </Button>
             </Link>
           </div>
@@ -118,7 +118,7 @@ export default function LandingPage() {
             </div>
           </motion.div>
 
-          <motion.h1 {...FADE_UP(1)} className="text-balance text-5xl font-bold leading-[1.08] tracking-tight sm:text-[4.5rem]">
+          <motion.h1 {...FADE_UP(1)} className="text-balance text-[2.5rem] font-bold leading-[1.08] tracking-tight sm:text-5xl lg:text-[4.5rem]">
             Every voice heard.{" "}
             <span className="relative inline-block">
               <span className="bg-gradient-to-r from-clarion-amber-500 via-orange-400 to-clarion-amber-400 bg-clip-text text-transparent">
@@ -131,23 +131,23 @@ export default function LandingPage() {
             Clarion gives universities a modern platform to capture, route, and resolve complaints — with full transparency, smart automation, and leadership-ready analytics.
           </motion.p>
 
-          <motion.div {...FADE_UP(3)} className="mt-8 flex flex-wrap items-center justify-center gap-3">
-            <Link href="/register">
-              <Button size="lg" className="gap-2 bg-slate-900 text-white hover:bg-slate-700 shadow-lg shadow-slate-900/20 dark:bg-white dark:text-slate-900 dark:hover:bg-slate-100 dark:shadow-white/10">
-                Start free trial <ArrowRight className="h-4 w-4" />
+          <motion.div {...FADE_UP(3)} className="mt-8 flex flex-col sm:flex-row flex-wrap items-stretch sm:items-center justify-center gap-3 w-full sm:w-auto max-w-md sm:max-w-none mx-auto">
+            <Link href="/register" className="w-full sm:w-auto">
+              <Button size="lg" className="w-full sm:w-auto gap-2 min-h-[48px] cursor-pointer bg-slate-900 text-white hover:bg-slate-700 shadow-lg shadow-slate-900/20 dark:bg-white dark:text-slate-900 dark:hover:bg-slate-100 dark:shadow-white/10 transition-all duration-200">
+                Start free trial <ArrowRight className="h-4 w-4" aria-hidden="true" />
               </Button>
             </Link>
-            <Link href="/login">
-              <Button size="lg" variant="outline" className="border-slate-200 text-slate-700 hover:border-slate-400 dark:border-white/10 dark:text-slate-200 dark:hover:border-white/20 dark:hover:bg-white/5">
+            <Link href="/login" className="w-full sm:w-auto">
+              <Button size="lg" variant="outline" className="w-full sm:w-auto min-h-[48px] cursor-pointer border-slate-200 text-slate-700 hover:border-slate-400 dark:border-white/10 dark:text-slate-200 dark:hover:border-white/20 dark:hover:bg-white/5 transition-all duration-200">
                 Sign in to your account
               </Button>
             </Link>
           </motion.div>
 
           {/* Stats */}
-          <motion.div {...FADE_UP(4)} className="mx-auto mt-16 grid max-w-lg grid-cols-3 divide-x divide-slate-200 dark:divide-white/10 rounded-2xl border border-slate-200/80 bg-white/60 backdrop-blur-sm dark:border-white/[0.06] dark:bg-white/[0.03] overflow-hidden">
+          <motion.div {...FADE_UP(4)} className="mx-auto mt-16 grid max-w-lg grid-cols-3 divide-x divide-slate-200 dark:divide-white/10 rounded-2xl border border-slate-200/80 bg-white/60 backdrop-blur-sm dark:border-white/[0.06] dark:bg-white/[0.03] overflow-hidden" role="region" aria-label="Platform statistics">
             {stats.map((s) => (
-              <div key={s.label} className="py-5 text-center px-2">
+              <div key={s.label} className="py-5 text-center px-2" role="figure" aria-label={`${s.value} ${s.label}`}>
                 <div className="text-2xl font-bold tracking-tight text-slate-900 dark:text-white">{s.value}</div>
                 <div className="mt-0.5 text-[11.5px] text-slate-500 dark:text-slate-400">{s.label}</div>
               </div>
@@ -171,8 +171,10 @@ export default function LandingPage() {
                   whileHover={{ y: -4 }}
                   transition={{ type: "spring", stiffness: 300, damping: 20 }}
                   className="group relative rounded-2xl border border-slate-200/80 bg-white p-7 shadow-sm dark:border-white/[0.07] dark:bg-white/[0.03] dark:hover:bg-white/[0.05] transition-colors duration-200"
+                  role="article"
+                  aria-label={`Step ${step.step}: ${step.title}`}
                 >
-                  <div className="mb-5 flex h-12 w-12 items-center justify-center rounded-xl border border-slate-100 bg-slate-50 dark:border-white/10 dark:bg-white/5 text-slate-700 dark:text-slate-300 shadow-sm">
+                  <div className="mb-5 flex h-12 w-12 items-center justify-center rounded-xl border border-slate-100 bg-slate-50 dark:border-white/10 dark:bg-white/5 text-slate-700 dark:text-slate-300 shadow-sm" aria-hidden="true">
                     <step.icon className="h-5 w-5" />
                   </div>
                   <span className="text-[10.5px] font-bold uppercase tracking-widest text-clarion-amber-500">Step {step.step}</span>
@@ -181,7 +183,7 @@ export default function LandingPage() {
 
                   {i < steps.length - 1 && (
                     <div className="absolute -right-3 top-1/2 hidden -translate-y-1/2 sm:flex z-10">
-                      <div className="flex h-6 w-6 items-center justify-center rounded-full border border-slate-200 bg-white dark:border-white/10 dark:bg-slate-900 shadow-sm">
+                      <div className="flex h-6 w-6 items-center justify-center rounded-full border border-slate-200 bg-white dark:border-white/10 dark:bg-[#111113] shadow-sm">
                         <ArrowRight className="h-3 w-3 text-slate-400" />
                       </div>
                     </div>
@@ -211,9 +213,11 @@ export default function LandingPage() {
                 transition={stagger(i % 3)}
                 viewport={{ once: true, margin: "-60px" }}
                 whileHover={{ y: -3 }}
-                className="group rounded-xl border border-slate-200/80 bg-white p-6 shadow-sm transition-colors duration-200 dark:border-white/[0.07] dark:bg-white/[0.03] dark:hover:bg-white/[0.05] cursor-default"
+                className="group rounded-xl border border-slate-200/80 bg-white p-6 shadow-sm transition-all duration-150 dark:border-white/[0.07] dark:bg-white/[0.03] dark:hover:bg-white/[0.05]"
+                role="article"
+                aria-label={f.title}
               >
-                <div className="mb-4 flex h-9 w-9 items-center justify-center rounded-lg border border-slate-100 bg-slate-50 dark:border-white/10 dark:bg-white/5 text-slate-600 dark:text-slate-400 transition-colors group-hover:border-clarion-amber-200 group-hover:bg-clarion-amber-50 group-hover:text-clarion-amber-600 dark:group-hover:border-clarion-amber-900/40 dark:group-hover:bg-clarion-amber-500/10 dark:group-hover:text-clarion-amber-400">
+                <div className="mb-4 flex h-9 w-9 items-center justify-center rounded-lg border border-slate-100 bg-slate-50 dark:border-white/10 dark:bg-white/5 text-slate-600 dark:text-slate-400 transition-colors group-hover:border-clarion-amber-200 group-hover:bg-clarion-amber-50 group-hover:text-clarion-amber-600 dark:group-hover:border-clarion-amber-900/40 dark:group-hover:bg-clarion-amber-500/10 dark:group-hover:text-clarion-amber-400" aria-hidden="true">
                   <f.icon className="h-4.5 w-4.5" style={{ width: "1.0625rem", height: "1.0625rem" }} />
                 </div>
                 <h3 className="text-[14px] font-semibold">{f.title}</h3>
@@ -266,14 +270,14 @@ export default function LandingPage() {
                 <p className="mx-auto mt-4 max-w-md text-slate-400 leading-relaxed text-[15px]">
                   Join institutions already using Clarion to build trust, accountability, and better outcomes for students and staff.
                 </p>
-                <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
-                  <Link href="/register">
-                    <Button size="lg" className="bg-clarion-amber-500 text-clarion-navy-900 hover:bg-clarion-amber-400 shadow-lg shadow-clarion-amber-500/25 font-semibold">
+                <div className="mt-8 flex flex-col sm:flex-row flex-wrap items-stretch sm:items-center justify-center gap-3 w-full sm:w-auto max-w-md sm:max-w-none mx-auto">
+                  <Link href="/register" className="w-full sm:w-auto">
+                    <Button size="lg" className="w-full sm:w-auto min-h-[48px] cursor-pointer bg-clarion-amber-500 text-slate-700 hover:bg-clarion-amber-400 shadow-lg shadow-clarion-amber-500/25 font-semibold transition-all duration-200">
                       Get started today
                     </Button>
                   </Link>
-                  <Link href="/login">
-                    <Button size="lg" variant="outline" className="border-white/15 text-white hover:bg-white/10 hover:text-white dark:border-white/15 dark:text-slate-200 dark:hover:bg-white/10">
+                  <Link href="/login" className="w-full sm:w-auto">
+                    <Button size="lg" variant="outline" className="w-full sm:w-auto min-h-[48px] cursor-pointer border-white/15 text-white hover:bg-white/10 hover:text-white dark:border-white/15 dark:text-slate-200 dark:hover:bg-white/10 transition-all duration-200">
                       Sign in
                     </Button>
                   </Link>
@@ -289,7 +293,7 @@ export default function LandingPage() {
         <div className="mx-auto flex max-w-5xl items-center justify-between px-6 py-5">
           <div className="flex items-center gap-2">
             <div className="flex h-6 w-6 items-center justify-center rounded bg-slate-900 dark:bg-white">
-              <span className="text-[10px] font-bold text-clarion-amber-400 dark:text-clarion-navy-900">C</span>
+              <span className="text-[10px] font-bold text-clarion-amber-400 dark:text-slate-700">C</span>
             </div>
             <span className="text-[13px] font-medium text-slate-600 dark:text-slate-400">Clarion</span>
           </div>

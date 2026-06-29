@@ -53,7 +53,7 @@ export default function AuditLogPage() {
         <CardContent className="p-4">
           <div className="grid gap-3 md:grid-cols-3 xl:grid-cols-6">
             <div className="relative">
-              <Search className="pointer-events-none absolute left-3 top-2.5 h-4 w-4 text-clarion-navy-400" />
+              <Search className="pointer-events-none absolute left-3 top-2.5 h-4 w-4 text-slate-700" />
               <Input
                 className="pl-9"
                 placeholder="Action"
@@ -93,7 +93,7 @@ export default function AuditLogPage() {
           ) : (
             <div className="overflow-x-auto">
               <table className="w-full min-w-[900px] text-sm">
-                <thead className="border-b bg-clarion-navy-50 text-left text-xs uppercase text-clarion-navy-500">
+                <thead className="border-b bg-indigo-50 text-left text-xs uppercase text-indigo-500">
                   <tr>
                     <th className="px-4 py-3 font-medium">When</th>
                     <th className="px-4 py-3 font-medium">Actor</th>
@@ -105,20 +105,20 @@ export default function AuditLogPage() {
                 </thead>
                 <tbody className="divide-y">
                   {rows.map((row) => (
-                    <tr key={row.id} className="hover:bg-gray-50">
-                      <td className="px-4 py-3 text-clarion-navy-700">{formatDate(row.createdAt)}</td>
+                    <tr key={row.id} className="hover:bg-slate-50/80 dark:hover:bg-white/[0.02] transition-colors">
+                      <td className="px-4 py-3 text-slate-700">{formatDate(row.createdAt)}</td>
                       <td className="px-4 py-3">
-                        <div className="font-medium text-clarion-navy-800">
+                        <div className="font-medium text-slate-800 dark:text-slate-100">
                           {row.actor ? `${row.actor.firstName} ${row.actor.lastName}` : "System"}
                         </div>
                         {row.actor?.email && <div className="text-xs text-muted-foreground">{row.actor.email}</div>}
                       </td>
-                      <td className="px-4 py-3 font-medium text-clarion-navy-800">{row.action}</td>
-                      <td className="px-4 py-3 text-clarion-navy-600">
+                      <td className="px-4 py-3 font-medium text-slate-800 dark:text-slate-100">{row.action}</td>
+                      <td className="px-4 py-3 text-indigo-600 dark:text-indigo-400">
                         {row.entityType}
                         {row.entityId && <div className="text-xs text-muted-foreground">{row.entityId}</div>}
                       </td>
-                      <td className="px-4 py-3 text-clarion-navy-600">
+                      <td className="px-4 py-3 text-indigo-600 dark:text-indigo-400">
                         {row.institution ? `${row.institution.name} (${row.institution.slug})` : "Global"}
                       </td>
                       <td className="max-w-xs truncate px-4 py-3 text-muted-foreground">

@@ -13,7 +13,7 @@ export default function AdminOverviewPage() {
 
       {isLoading ? (
         <div className="grid gap-4 sm:grid-cols-3">
-          {[1, 2, 3].map(i => <div key={i} className="h-24 rounded-lg bg-gray-100 animate-pulse" />)}
+          {[1, 2, 3].map(i => <div key={i} className="h-24 rounded-2xl bg-slate-100 dark:bg-white/[0.05] animate-pulse" />)}
         </div>
       ) : (
         <div className="grid gap-4 sm:grid-cols-3">
@@ -23,7 +23,7 @@ export default function AdminOverviewPage() {
         </div>
       )}
 
-      <div className="rounded-lg border border-gray-100 bg-white p-4">
+      <div className="rounded-2xl border border-slate-200/60 dark:border-white/[0.06] bg-white dark:bg-[#111113] p-4">
         <p className="text-sm text-muted-foreground">
           Full audit log and multi-institution management coming in Phase 5.
         </p>

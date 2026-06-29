@@ -107,22 +107,17 @@ export function NotificationCenter() {
       {open && (
         <div
           className={cn(
-            "absolute right-0 top-10 z-50 w-[340px] max-w-[calc(100vw-2rem)]",
-            "rounded-xl border border-slate-200 dark:border-slate-800",
-            "bg-white dark:bg-slate-900 shadow-xl shadow-slate-900/10 dark:shadow-black/30",
-            "animate-in fade-in slide-in-from-top-2 duration-150",
-            "mr-0 sm:mr-0"
+            "absolute bottom-10 left-0 z-50 w-[340px] max-w-[calc(100vw-2rem)]",
+            "rounded-xl border border-slate-200 dark:border-white/[0.07]",
+            "bg-white dark:bg-[#111113] shadow-xl shadow-slate-900/10 dark:shadow-black/30",
+            "animate-in fade-in slide-in-from-bottom-2 duration-150",
           )}
-          style={{
-            maxHeight: "min(80vh, 500px)",
-            right: "0",
-            left: "auto"
-          }}
+          style={{ maxHeight: "min(80vh, 500px)" }}
           role="region"
           aria-label="Notifications"
         >
           {/* Header */}
-          <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 px-4 py-3">
+          <div className="flex items-center justify-between border-b border-slate-100 dark:border-white/[0.07] px-4 py-3">
             <div className="flex items-center gap-2">
               <h3 className="text-[13px] font-semibold text-slate-800 dark:text-slate-100">Notifications</h3>
               {unreadCount > 0 && (
@@ -144,7 +139,7 @@ export function NotificationCenter() {
               <Link
                 href="/dashboard/notifications"
                 onClick={() => setOpen(false)}
-                className="flex items-center gap-1 text-[11.5px] font-medium text-clarion-navy-600 dark:text-clarion-navy-300 hover:text-clarion-navy-900 dark:hover:text-clarion-navy-100 transition-colors"
+                className="flex items-center gap-1 text-[11.5px] font-medium text-slate-700 dark:text-slate-700 hover:text-slate-700 dark:hover:text-slate-700 transition-colors"
               >
                 View all <ExternalLink className="h-3 w-3" />
               </Link>
@@ -166,7 +161,7 @@ export function NotificationCenter() {
                   onClick={() => handleClick(n)}
                   className={cn(
                     "w-full flex items-start gap-3 px-4 py-3.5 text-left transition-colors duration-100 cursor-pointer",
-                    idx < notifications.length - 1 && "border-b border-slate-50 dark:border-slate-800/60",
+                    idx < notifications.length - 1 && "border-b border-slate-50 dark:border-white/[0.07]/60",
                     !n.isRead
                       ? "bg-blue-50/50 hover:bg-blue-50 dark:bg-blue-950/10 dark:hover:bg-blue-950/20"
                       : "hover:bg-slate-50 dark:hover:bg-slate-800/30"
@@ -177,7 +172,7 @@ export function NotificationCenter() {
                     "flex h-7 w-7 shrink-0 items-center justify-center rounded-lg border mt-0.5",
                     !n.isRead
                       ? "border-blue-200/60 bg-blue-50 dark:border-blue-900/40 dark:bg-blue-950/20"
-                      : "border-slate-100 bg-slate-50 dark:border-slate-800 dark:bg-slate-900"
+                      : "border-slate-100 bg-slate-50 dark:border-white/[0.07] dark:bg-[#111113]"
                   )}>
                     {notificationIcon(n)}
                   </div>

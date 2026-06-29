@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "Skill(ui-ux-pro-max)",
+      "Bash(python scripts/search.py:*)"
+    ]
+  }
+}

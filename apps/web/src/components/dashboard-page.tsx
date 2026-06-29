@@ -22,8 +22,8 @@ export function DashboardPage({ title, description }: DashboardPageProps) {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold text-clarion-navy-800">{title}</h1>
-        <p className="mt-1 text-clarion-navy-400">{description}</p>
+        <h1 className="text-2xl font-bold text-slate-700">{title}</h1>
+        <p className="mt-1 text-slate-700">{description}</p>
       </div>
 
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
@@ -60,7 +60,7 @@ export function DashboardPage({ title, description }: DashboardPageProps) {
             <CardDescription>Phase 1 feature</CardDescription>
           </CardHeader>
           <CardContent>
-            <p className="text-3xl font-bold text-clarion-navy-800">—</p>
+            <p className="text-3xl font-bold text-slate-700">—</p>
             <p className="mt-1 text-sm text-muted-foreground">
               Complaint management coming soon
             </p>
@@ -73,7 +73,7 @@ export function DashboardPage({ title, description }: DashboardPageProps) {
             <CardDescription>Phase 1 feature</CardDescription>
           </CardHeader>
           <CardContent>
-            <p className="text-3xl font-bold text-clarion-navy-800">—</p>
+            <p className="text-3xl font-bold text-slate-700">—</p>
             <p className="mt-1 text-sm text-muted-foreground">
               Ticket tracking coming soon
             </p>

@@ -27,8 +27,8 @@ export default function DeptHeadComplaintsPage() {
             onClick={() => { setStatus(s); setPage(1); }}
             className={`rounded-full border px-3 py-1 text-xs font-medium transition-colors ${
               status === s
-                ? "border-clarion-navy-800 bg-clarion-navy-800 text-white"
-                : "border-gray-200 text-gray-600 hover:border-clarion-navy-300"
+                ? "border-indigo-600 bg-indigo-600 text-white shadow-sm"
+                : "border-gray-200 text-gray-600 hover:border-indigo-300 dark:hover:border-indigo-700"
             }`}
           >
             {s || "All"}
@@ -37,28 +37,28 @@ export default function DeptHeadComplaintsPage() {
       </div>
 
       {isLoading ? (
-        <div className="space-y-2">{[1, 2, 3].map((i) => <div key={i} className="h-14 rounded-lg bg-gray-100 animate-pulse" />)}</div>
+        <div className="space-y-2">{[1, 2, 3].map((i) => <div key={i} className="h-14 rounded-xl bg-slate-100 dark:bg-white/[0.05] animate-pulse" />)}</div>
       ) : items.length === 0 ? (
         <EmptyState title="No complaints found" />
       ) : (
         <>
-          <div className="rounded-lg border border-gray-100 bg-white overflow-hidden">
+          <div className="rounded-2xl border border-slate-200/60 dark:border-white/[0.06] bg-white dark:bg-[#111113] overflow-hidden shadow-sm">
             <table className="w-full text-sm">
-              <thead className="bg-gray-50 border-b">
+              <thead className="bg-slate-50/80 dark:bg-white/[0.02] border-b border-slate-100 dark:border-white/[0.04]">
                 <tr>
                   {["Reference", "Title", "Submitter", "Category", "Status", "Date"].map((h) => (
-                    <th key={h} className="px-4 py-2.5 text-left text-xs font-medium text-muted-foreground">{h}</th>
+                    <th key={h} className="px-4 py-2.5 text-left text-xs font-semibold uppercase tracking-wider text-slate-400 dark:text-slate-500">{h}</th>
                   ))}
                 </tr>
               </thead>
-              <tbody className="divide-y divide-gray-50">
+              <tbody className="divide-y divide-slate-100/80 dark:divide-white/[0.04]">
                 {items.map((c) => (
-                  <tr key={c.id} className="hover:bg-gray-50">
+                  <tr key={c.id} className="hover:bg-slate-50/80 dark:hover:bg-white/[0.02] transition-colors">
                     <td className="px-4 py-3 text-xs text-muted-foreground font-mono">{c.referenceNumber}</td>
                     <td className="px-4 py-3">
                       <Link
-                        href={`/dashboard/staff/complaints/${c.id}`}
-                        className="font-medium text-clarion-navy-800 hover:underline truncate max-w-[200px] block"
+                        href={`/dashboard/dept-head/complaints/${c.id}`}
+                        className="font-medium text-slate-800 dark:text-slate-100 hover:underline truncate max-w-[200px] block"
                       >
                         {c.title}
                       </Link>

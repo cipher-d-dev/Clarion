@@ -37,7 +37,7 @@ export default function ManagementTicketDetailPage() {
         {t.escalatedLevel > 0 && <span className="rounded-full bg-orange-50 px-2 py-0.5 text-xs font-medium text-orange-700">Escalated L{t.escalatedLevel}</span>}
       </div>
 
-      <dl className="grid grid-cols-2 gap-3 rounded-lg border border-gray-100 bg-white p-4 text-sm sm:grid-cols-3">
+      <dl className="grid grid-cols-2 gap-3 rounded-2xl border border-slate-200/60 dark:border-white/[0.06] bg-white dark:bg-[#111113] p-4 text-sm sm:grid-cols-3">
         <div><dt className="text-xs text-muted-foreground">Department</dt><dd>{t.department?.name ?? "—"}</dd></div>
         <div>
           <dt className="text-xs text-muted-foreground">Assignee</dt>
@@ -53,9 +53,9 @@ export default function ManagementTicketDetailPage() {
       </dl>
 
       {t.complaint && (
-        <div className="rounded-lg border border-gray-100 bg-white p-4">
-          <h2 className="mb-2 text-sm font-semibold text-clarion-navy-700">Complaint</h2>
-          <Link href={`/dashboard/management/complaints/${t.complaintId}`} className="text-sm text-clarion-navy-600 hover:underline font-medium">
+        <div className="rounded-2xl border border-slate-200/60 dark:border-white/[0.06] bg-white dark:bg-[#111113] p-4">
+          <h2 className="mb-2 text-sm font-semibold text-slate-700 dark:text-slate-200">Complaint</h2>
+          <Link href={`/dashboard/management/complaints/${t.complaintId}`} className="text-sm text-indigo-600 dark:text-indigo-400 hover:underline font-medium">
             {t.complaint.title}
           </Link>
           <p className="mt-1 text-xs text-muted-foreground line-clamp-3">{t.complaint.description}</p>
@@ -64,13 +64,13 @@ export default function ManagementTicketDetailPage() {
 
       {timeline.length > 0 && (
         <div>
-          <h2 className="mb-3 text-sm font-semibold text-clarion-navy-700">Timeline</h2>
+          <h2 className="mb-3 text-sm font-semibold text-slate-700 dark:text-slate-200">Timeline</h2>
           <ol className="space-y-3">
             {timeline.map((ev) => (
               <li key={ev.id} className="flex gap-3 text-sm">
-                <span className="mt-1 h-2 w-2 shrink-0 rounded-full bg-clarion-navy-300" />
+                <span className="mt-1 h-2 w-2 shrink-0 rounded-full bg-slate-700" />
                 <div>
-                  <p className="text-clarion-navy-800">{ev.description}</p>
+                  <p className="text-slate-800 dark:text-slate-100">{ev.description}</p>
                   <p className="text-xs text-muted-foreground">{new Date(ev.createdAt).toLocaleString()}</p>
                 </div>
               </li>

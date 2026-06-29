@@ -31,7 +31,7 @@ export default function LecturerComplaintsPage() {
         {["", ...Object.values(ComplaintStatus)].map((s) => (
           <button key={s} onClick={() => { setStatus(s as ComplaintStatus | ""); setPage(1); }}
             className={`rounded-full border px-3 py-1 text-xs font-medium transition-colors ${
-              status === s ? "border-clarion-navy-800 bg-clarion-navy-800 text-white" : "border-gray-200 text-gray-600 hover:border-clarion-navy-300"
+              status === s ? "border-indigo-600 bg-indigo-600 text-white shadow-sm" : "border-gray-200 text-gray-600 hover:border-indigo-300 dark:hover:border-indigo-700"
             }`}>
             {s || "All"}
           </button>
@@ -48,9 +48,9 @@ export default function LecturerComplaintsPage() {
           <div className="space-y-2">
             {items.map((c) => (
               <Link key={c.id} href={`/dashboard/lecturer/complaints/${c.id}`}
-                className="flex items-center justify-between rounded-lg border border-gray-100 bg-white px-4 py-3 hover:bg-gray-50 transition-colors">
+                className="flex items-center justify-between flex items-center justify-between rounded-xl border border-slate-200/60 dark:border-white/[0.06] bg-white dark:bg-[#111113] px-4 py-3 hover:bg-slate-50 dark:hover:bg-white/[0.03] transition-colors transition-colors">
                 <div className="min-w-0 flex-1">
-                  <p className="text-sm font-medium text-clarion-navy-800 truncate">{c.title}</p>
+                  <p className="text-sm font-medium text-slate-800 dark:text-slate-100 truncate">{c.title}</p>
                   <div className="flex items-center gap-3 mt-1">
                     <span className="text-xs text-muted-foreground">{c.referenceNumber}</span>
                     {c.department && <span className="text-xs text-muted-foreground">{c.department.name}</span>}

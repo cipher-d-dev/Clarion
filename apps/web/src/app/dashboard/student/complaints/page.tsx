@@ -58,8 +58,8 @@ export default function StudentComplaintsPage() {
             className={cn(
               "rounded-full border px-3.5 py-1.5 text-[12px] font-medium transition-all duration-150 cursor-pointer",
               status === s
-                ? "border-clarion-navy-800 bg-clarion-navy-800 text-white dark:border-clarion-amber-500 dark:bg-clarion-amber-500 dark:text-clarion-navy-950"
-                : "border-slate-200 bg-white text-slate-600 hover:border-slate-300 hover:text-slate-900 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-400 dark:hover:border-slate-600"
+                ? "border-indigo-600 bg-indigo-600 text-white shadow-sm dark:border-clarion-amber-500 dark:bg-clarion-amber-500 dark:text-slate-700"
+                : "border-slate-200 bg-white text-slate-600 hover:border-slate-300 hover:text-slate-900 dark:border-slate-700 dark:bg-[#111113] dark:text-slate-400 dark:hover:border-slate-600"
             )}
           >
             {STATUS_LABELS[s]}
@@ -94,14 +94,14 @@ export default function StudentComplaintsPage() {
               <Link
                 key={c.id}
                 href={`/dashboard/student/complaints/${c.id}`}
-                className="group flex items-center justify-between rounded-xl border border-slate-200 bg-white px-5 py-4 transition-all duration-150 hover:-translate-y-0.5 hover:border-slate-300 hover:shadow-sm dark:border-slate-800 dark:bg-slate-900/60 dark:hover:border-slate-700"
+                className="group flex items-center justify-between rounded-xl border border-slate-200 bg-white px-5 py-4 transition-all duration-150 hover:-translate-y-0.5 hover:border-slate-300 hover:shadow-sm dark:border-white/[0.07] dark:bg-[#111113] dark:hover:border-slate-700"
               >
                 <div className="flex items-center gap-4 min-w-0">
-                  <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-slate-100 bg-slate-50 text-slate-400 dark:border-slate-800 dark:bg-slate-800">
+                  <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-slate-100 bg-slate-50 text-slate-400 dark:border-white/[0.07] dark:bg-slate-800">
                     <FileText className="h-4 w-4" />
                   </div>
                   <div className="min-w-0">
-                    <p className="text-[13.5px] font-semibold text-slate-800 dark:text-slate-100 truncate group-hover:text-clarion-navy-800 dark:group-hover:text-slate-50 transition-colors">
+                    <p className="text-[13.5px] font-semibold text-slate-800 dark:text-slate-100 truncate group-hover:text-slate-800 dark:text-slate-100 dark:group-hover:text-slate-50 transition-colors">
                       {c.title}
                     </p>
                     <div className="flex flex-wrap items-center gap-2 mt-0.5">

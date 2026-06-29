@@ -51,8 +51,8 @@ export default function StaffTicketsPage() {
               className={cn(
                 "rounded-full border px-3 py-1.5 text-[11.5px] font-medium transition-all duration-150 cursor-pointer",
                 status === s
-                  ? "border-clarion-navy-800 bg-clarion-navy-800 text-white dark:border-clarion-amber-500 dark:bg-clarion-amber-500 dark:text-clarion-navy-950"
-                  : "border-slate-200 bg-white text-slate-600 hover:border-slate-300 hover:text-slate-900 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-400"
+                  ? "border-indigo-600 bg-indigo-600 text-white shadow-sm dark:border-clarion-amber-500 dark:bg-clarion-amber-500 dark:text-slate-700"
+                  : "border-slate-200 bg-white text-slate-600 hover:border-slate-300 hover:text-slate-900 dark:border-slate-700 dark:bg-[#111113] dark:text-slate-400"
               )}
             >
               {s || "All Status"}
@@ -67,8 +67,8 @@ export default function StaffTicketsPage() {
               className={cn(
                 "rounded-full border px-3 py-1.5 text-[11.5px] font-medium transition-all duration-150 cursor-pointer",
                 priority === p
-                  ? "border-clarion-navy-800 bg-clarion-navy-800 text-white dark:border-clarion-amber-500 dark:bg-clarion-amber-500 dark:text-clarion-navy-950"
-                  : "border-slate-200 bg-white text-slate-600 hover:border-slate-300 hover:text-slate-900 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-400"
+                  ? "border-indigo-600 bg-indigo-600 text-white shadow-sm dark:border-clarion-amber-500 dark:bg-clarion-amber-500 dark:text-slate-700"
+                  : "border-slate-200 bg-white text-slate-600 hover:border-slate-300 hover:text-slate-900 dark:border-slate-700 dark:bg-[#111113] dark:text-slate-400"
               )}
             >
               {p || "All Priority"}
@@ -92,9 +92,9 @@ export default function StaffTicketsPage() {
       ) : (
         <>
           {/* Table */}
-          <div className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/60 overflow-hidden shadow-sm">
+          <div className="rounded-xl border border-slate-200 dark:border-white/[0.07] bg-white dark:bg-[#111113] overflow-hidden shadow-sm">
             {/* Table header */}
-            <div className="hidden md:grid grid-cols-[2fr_1fr_1fr_auto_auto_auto_auto] items-center border-b border-slate-100 dark:border-slate-800 bg-slate-50/70 dark:bg-slate-900/40 px-5 py-2.5 text-[11px] font-semibold uppercase tracking-wider text-slate-400 dark:text-slate-500 gap-4">
+            <div className="hidden md:grid grid-cols-[2fr_1fr_1fr_auto_auto_auto_auto] items-center border-b border-slate-100 dark:border-white/[0.07] bg-slate-50/70 dark:bg-[#111113]/40 px-5 py-2.5 text-[11px] font-semibold uppercase tracking-wider text-slate-400 dark:text-slate-500 gap-4">
               <span>Ticket</span>
               <span>Department</span>
               <span>Assignee</span>
@@ -115,7 +115,7 @@ export default function StaffTicketsPage() {
                   >
                     {/* Title + ref */}
                     <div className="min-w-0">
-                      <p className="text-[13.5px] font-semibold text-slate-800 dark:text-slate-100 truncate group-hover:text-clarion-navy-800 dark:group-hover:text-slate-50 transition-colors">
+                      <p className="text-[13.5px] font-semibold text-slate-800 dark:text-slate-100 truncate group-hover:text-slate-800 dark:text-slate-100 dark:group-hover:text-slate-50 transition-colors">
                         {t.title}
                       </p>
                       <p className="text-[11px] font-mono text-slate-400 dark:text-slate-500 mt-0.5">{t.referenceNumber}</p>

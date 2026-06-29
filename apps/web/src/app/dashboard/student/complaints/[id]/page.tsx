@@ -53,7 +53,7 @@ function ProgressTracker({ status }: { status: ComplaintStatus }) {
   const progressPct = isRejected ? 0 : Math.min(100, (current / 4) * 100);
 
   return (
-    <div className="rounded-xl border border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-900/60 p-6 shadow-sm">
+    <div className="rounded-xl border border-slate-200 bg-white dark:border-white/[0.07] dark:bg-[#111113] p-6 shadow-sm">
       {/* Progress bar (mobile + desktop supplement) */}
       <div className="mb-6 h-1.5 w-full rounded-full bg-slate-100 dark:bg-slate-800 overflow-hidden">
         <div
@@ -76,15 +76,15 @@ function ProgressTracker({ status }: { status: ComplaintStatus }) {
               <div className={cn(
                 "flex h-8 w-8 items-center justify-center rounded-full border text-[12px] font-bold shrink-0 transition-all duration-200",
                 done && "border-emerald-400 bg-emerald-500 text-white",
-                active && "border-clarion-navy-800 bg-clarion-navy-800 text-white dark:border-clarion-amber-500 dark:bg-clarion-amber-500 dark:text-clarion-navy-950 ring-4 ring-clarion-navy-100 dark:ring-clarion-amber-500/20",
-                pending && "border-slate-200 bg-white text-slate-400 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-600"
+                active && "border-indigo-600 bg-indigo-600 text-white shadow-sm dark:border-clarion-amber-500 dark:bg-clarion-amber-500 dark:text-slate-700 ring-4 ring-indigo-100/50 dark:ring-clarion-amber-500/20",
+                pending && "border-slate-200 bg-white text-slate-400 dark:border-slate-700 dark:bg-[#111113] dark:text-slate-600"
               )}>
                 {done ? <Check className="h-3.5 w-3.5 stroke-[3]" /> : active ? <Clock className="h-3.5 w-3.5" /> : <span>{idx + 1}</span>}
               </div>
               <p className={cn(
                 "text-[11px] font-semibold uppercase tracking-wider transition-colors md:text-center",
                 done && "text-emerald-600 dark:text-emerald-400",
-                active && "text-clarion-navy-900 dark:text-slate-50",
+                active && "text-slate-700 dark:text-slate-50",
                 pending && "text-slate-400 dark:text-slate-600"
               )}>
                 {step.label}
@@ -123,10 +123,10 @@ function Timeline({ events }: { events: { id: string; eventType: string; descrip
   return (
     <div className="relative space-y-5 pl-9">
       {/* Vertical line */}
-      <div className="absolute left-[14px] top-2 bottom-2 w-px bg-slate-100 dark:bg-slate-800" />
+      <div className="absolute left-[14px] top-2 bottom-2 w-px bg-slate-100 dark:bg-white/[0.06]" />
       {events.map((e) => (
         <div key={e.id} className="relative flex gap-4 animate-in fade-in slide-in-from-left-1 duration-200">
-          <div className="absolute -left-9 flex h-7 w-7 items-center justify-center rounded-lg border border-slate-100 bg-white dark:border-slate-800 dark:bg-slate-900 shadow-sm z-10">
+          <div className="absolute -left-9 flex h-7 w-7 items-center justify-center rounded-lg border border-slate-100 dark:border-white/[0.07] bg-white dark:bg-[#111113] shadow-sm z-10">
             {eventIcon(e.eventType)}
           </div>
           <div className="flex-1 min-w-0 pt-0.5">
@@ -176,8 +176,8 @@ function StarRating({ value, onChange }: { value: number; onChange: (n: number) 
 
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
   return (
-    <div className="rounded-xl border border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-900/60 overflow-hidden shadow-sm">
-      <div className="border-b border-slate-100 dark:border-slate-800 px-6 py-3.5">
+    <div className="rounded-2xl border border-slate-200/60 dark:border-white/[0.07] bg-white dark:bg-[#111113] overflow-hidden shadow-sm">
+      <div className="border-b border-slate-100/80 dark:border-white/[0.05] px-6 py-3.5">
         <h2 className="text-[11px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">{title}</h2>
       </div>
       <div className="p-6">{children}</div>
@@ -253,9 +253,9 @@ export default function StudentComplaintDetailPage() {
             </div>
           ))}
         </div>
-        <div className="mt-5 border-t border-slate-100 dark:border-slate-800 pt-5">
+        <div className="mt-5 border-t border-slate-100 dark:border-white/[0.05] pt-5">
           <p className="text-[10.5px] font-semibold uppercase tracking-wider text-slate-400 dark:text-slate-500 mb-2">Description</p>
-          <p className="text-[13.5px] leading-relaxed text-slate-700 dark:text-slate-300 whitespace-pre-wrap">{complaint.description}</p>
+          <p className="text-[13.5px] leading-relaxed text-slate-700 dark:text-slate-200 whitespace-pre-wrap">{complaint.description}</p>
         </div>
       </Section>
 
@@ -291,7 +291,7 @@ export default function StudentComplaintDetailPage() {
       )}
 
       {complaint.satisfactionRating !== null && complaint.satisfactionRating !== undefined && (
-        <div className="rounded-xl border border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-900/60 px-6 py-4 shadow-sm flex items-center justify-between">
+        <div className="rounded-xl border border-slate-200 bg-white dark:border-white/[0.07] dark:bg-[#111113] px-6 py-4 shadow-sm flex items-center justify-between">
           <div>
             <p className="text-[10.5px] font-semibold uppercase tracking-wider text-slate-400 dark:text-slate-500 mb-1.5">Your Rating</p>
             <div className="flex items-center gap-1">

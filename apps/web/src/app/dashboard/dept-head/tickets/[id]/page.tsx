@@ -104,7 +104,7 @@ export default function DeptHeadTicketDetailPage() {
                 <ComplaintStatusBadge status={ticket.complaint.status} />
                 <span className="text-xs text-muted-foreground">{ticket.complaint.referenceNumber}</span>
               </div>
-              <p className="mt-2 text-clarion-navy-700">{ticket.complaint.description}</p>
+              <p className="mt-2 text-slate-700">{ticket.complaint.description}</p>
             </div>
           )}
         </CardContent>

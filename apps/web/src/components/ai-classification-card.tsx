@@ -41,7 +41,7 @@ function SentimentBar({ score }: { score: number }) {
 
 function InsightCell({ icon, label, value }: { icon: React.ReactNode; label: string; value: string }) {
   return (
-    <div className="rounded-lg border border-slate-100 bg-white/60 dark:border-slate-800 dark:bg-slate-900/30 p-3.5 shadow-sm">
+    <div className="rounded-lg border border-slate-100 bg-white/60 dark:border-white/[0.07] dark:bg-[#111113]/30 p-3.5 shadow-sm">
       <p className="flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 mb-1.5">
         {icon} {label}
       </p>
@@ -110,7 +110,7 @@ export function AiClassificationCard({ aiMetadata, sentimentScore, isStaffView =
 
         {/* Sentiment */}
         {effectiveSentiment != null && (
-          <div className="rounded-lg border border-slate-100 bg-white/60 dark:border-slate-800 dark:bg-slate-900/30 p-3.5 shadow-sm">
+          <div className="rounded-lg border border-slate-100 bg-white/60 dark:border-white/[0.07] dark:bg-[#111113]/30 p-3.5 shadow-sm">
             <p className="flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 mb-2.5">
               <Activity className="h-3 w-3" /> Emotional Tone
             </p>

@@ -41,8 +41,8 @@ export default function LecturerOverviewPage() {
 
       <div>
         <div className="mb-3 flex items-center justify-between">
-          <h2 className="text-sm font-semibold text-clarion-navy-700">Recent Complaints</h2>
-          <Link href="/dashboard/lecturer/complaints" className="text-xs text-clarion-navy-500 hover:underline">View all</Link>
+          <h2 className="text-sm font-semibold text-slate-700 dark:text-slate-200">Recent Complaints</h2>
+          <Link href="/dashboard/lecturer/complaints" className="text-xs text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:underline transition-colors">View all</Link>
         </div>
 
         {isLoading ? (
@@ -63,10 +63,10 @@ export default function LecturerOverviewPage() {
               <Link
                 key={c.id}
                 href={`/dashboard/lecturer/complaints/${c.id}`}
-                className="flex items-center justify-between rounded-lg border border-gray-100 bg-white px-4 py-3 hover:bg-gray-50 transition-colors"
+                className="flex items-center justify-between flex items-center justify-between rounded-xl border border-slate-200/60 dark:border-white/[0.06] bg-white dark:bg-[#111113] px-4 py-3 hover:bg-slate-50 dark:hover:bg-white/[0.03] transition-colors transition-colors"
               >
                 <div className="min-w-0">
-                  <p className="text-sm font-medium text-clarion-navy-800 truncate">{c.title}</p>
+                  <p className="text-sm font-medium text-slate-800 dark:text-slate-100 truncate">{c.title}</p>
                   <p className="text-xs text-muted-foreground">{c.referenceNumber}</p>
                 </div>
                 <ComplaintStatusBadge status={c.status} />

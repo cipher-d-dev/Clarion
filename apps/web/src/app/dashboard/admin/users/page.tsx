@@ -39,7 +39,7 @@ export default function AdminUsersPage() {
       <Card>
         <CardContent className="grid gap-3 p-4 md:grid-cols-[1.4fr_1fr_1fr]">
           <div className="relative">
-            <Search className="pointer-events-none absolute left-3 top-2.5 h-4 w-4 text-clarion-navy-400" />
+            <Search className="pointer-events-none absolute left-3 top-2.5 h-4 w-4 text-slate-700" />
             <Input
               className="pl-9"
               placeholder="Search users"
@@ -90,7 +90,7 @@ export default function AdminUsersPage() {
           ) : (
             <div className="overflow-x-auto">
               <table className="w-full min-w-[820px] text-sm">
-                <thead className="border-b bg-clarion-navy-50 text-left text-xs uppercase text-clarion-navy-500">
+                <thead className="border-b bg-indigo-50 text-left text-xs uppercase text-indigo-500">
                   <tr>
                     <th className="px-4 py-3 font-medium">User</th>
                     <th className="px-4 py-3 font-medium">Role</th>
@@ -102,13 +102,13 @@ export default function AdminUsersPage() {
                 </thead>
                 <tbody className="divide-y">
                   {rows.map((user) => (
-                    <tr key={user.id} className="hover:bg-gray-50">
+                    <tr key={user.id} className="hover:bg-slate-50/80 dark:hover:bg-white/[0.02] transition-colors">
                       <td className="px-4 py-3">
-                        <div className="font-medium text-clarion-navy-900">{user.firstName} {user.lastName}</div>
+                        <div className="font-medium text-slate-700">{user.firstName} {user.lastName}</div>
                         <div className="text-xs text-muted-foreground">{user.email}</div>
                       </td>
-                      <td className="px-4 py-3 text-clarion-navy-700">{formatRole(user.role)}</td>
-                      <td className="px-4 py-3 text-clarion-navy-600">{user.institution?.name ?? "Global"}</td>
+                      <td className="px-4 py-3 text-slate-700">{formatRole(user.role)}</td>
+                      <td className="px-4 py-3 text-indigo-600 dark:text-indigo-400">{user.institution?.name ?? "Global"}</td>
                       <td className="px-4 py-3 text-muted-foreground">
                         {user.lastLoginAt ? new Date(user.lastLoginAt).toLocaleDateString() : "-"}
                       </td>

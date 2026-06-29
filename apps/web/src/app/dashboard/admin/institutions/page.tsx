@@ -90,7 +90,7 @@ export default function AdminInstitutionsPage() {
       </Card>
 
       <div className="relative max-w-md">
-        <Search className="pointer-events-none absolute left-3 top-2.5 h-4 w-4 text-clarion-navy-400" />
+        <Search className="pointer-events-none absolute left-3 top-2.5 h-4 w-4 text-slate-700" />
         <Input
           className="pl-9"
           placeholder="Search institutions"
@@ -113,7 +113,7 @@ export default function AdminInstitutionsPage() {
           ) : (
             <div className="overflow-x-auto">
               <table className="w-full min-w-[760px] text-sm">
-                <thead className="border-b bg-clarion-navy-50 text-left text-xs uppercase text-clarion-navy-500">
+                <thead className="border-b bg-indigo-50 text-left text-xs uppercase text-indigo-500">
                   <tr>
                     <th className="px-4 py-3 font-medium">Institution</th>
                     <th className="px-4 py-3 font-medium">Domain</th>
@@ -125,21 +125,21 @@ export default function AdminInstitutionsPage() {
                 </thead>
                 <tbody className="divide-y">
                   {rows.map((institution) => (
-                    <tr key={institution.id} className="hover:bg-gray-50">
+                    <tr key={institution.id} className="hover:bg-slate-50/80 dark:hover:bg-white/[0.02] transition-colors">
                       <td className="px-4 py-3">
                         <div className="flex items-center gap-3">
-                          <div className="flex h-9 w-9 items-center justify-center rounded-md bg-clarion-navy-800 text-white">
+                          <div className="flex h-9 w-9 items-center justify-center rounded-md bg-slate-700 text-white">
                             <Building2 className="h-4 w-4" />
                           </div>
                           <div>
-                            <div className="font-medium text-clarion-navy-900">{institution.name}</div>
+                            <div className="font-medium text-slate-700">{institution.name}</div>
                             <div className="text-xs text-muted-foreground">{institution.slug}</div>
                           </div>
                         </div>
                       </td>
-                      <td className="px-4 py-3 text-clarion-navy-600">{institution.domain ?? "-"}</td>
-                      <td className="px-4 py-3 text-clarion-navy-700">{institution._count?.users ?? 0}</td>
-                      <td className="px-4 py-3 text-clarion-navy-700">{institution._count?.complaints ?? 0}</td>
+                      <td className="px-4 py-3 text-indigo-600 dark:text-indigo-400">{institution.domain ?? "-"}</td>
+                      <td className="px-4 py-3 text-slate-700">{institution._count?.users ?? 0}</td>
+                      <td className="px-4 py-3 text-slate-700">{institution._count?.complaints ?? 0}</td>
                       <td className="px-4 py-3">
                         <span className={institution.isActive ? "text-green-700" : "text-red-700"}>
                           {institution.isActive ? "Active" : "Inactive"}

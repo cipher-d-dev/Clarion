@@ -28,7 +28,7 @@ function ChatBubble({ message, isBot }: { message: ChatMessage; isBot: boolean }
       <div className={cn(
         "flex h-7 w-7 shrink-0 items-center justify-center rounded-lg border text-[11px] font-bold mt-0.5",
         isBot
-          ? "border-slate-200 bg-slate-50 text-slate-500 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-400"
+          ? "border-slate-200 bg-slate-50 text-slate-500 dark:border-white/[0.07] dark:bg-[#111113] dark:text-slate-400"
           : "border-clarion-amber-200/60 bg-clarion-amber-50 text-clarion-amber-700 dark:border-clarion-amber-900/40 dark:bg-clarion-amber-500/10 dark:text-clarion-amber-400"
       )}>
         {isBot ? <Sparkles className="h-3.5 w-3.5" /> : <User className="h-3.5 w-3.5" />}
@@ -39,8 +39,8 @@ function ChatBubble({ message, isBot }: { message: ChatMessage; isBot: boolean }
         <div className={cn(
           "rounded-xl px-3.5 py-2.5 text-[13px] leading-relaxed shadow-sm",
           isBot
-            ? "rounded-tl-sm border border-slate-100 bg-slate-50 text-slate-800 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-200"
-            : "rounded-tr-sm bg-clarion-navy-800 text-white dark:bg-clarion-navy-700"
+            ? "rounded-tl-sm border border-slate-100 bg-slate-50 text-slate-800 dark:border-white/[0.07] dark:bg-[#111113] dark:text-slate-200"
+            : "rounded-tr-sm bg-slate-700 text-white dark:bg-slate-700"
         )}>
           <p
             className="whitespace-pre-wrap"
@@ -72,10 +72,10 @@ function ChatBubble({ message, isBot }: { message: ChatMessage; isBot: boolean }
 function TypingIndicator() {
   return (
     <div className="flex gap-2.5">
-      <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg border border-slate-200 bg-slate-50 text-slate-400 dark:border-slate-800 dark:bg-slate-900">
+      <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg border border-slate-200 bg-slate-50 text-slate-400 dark:border-white/[0.07] dark:bg-[#111113]">
         <Sparkles className="h-3.5 w-3.5" />
       </div>
-      <div className="rounded-xl rounded-tl-sm border border-slate-100 bg-slate-50 dark:border-slate-800 dark:bg-slate-900 px-4 py-3 shadow-sm">
+      <div className="rounded-xl rounded-tl-sm border border-slate-100 bg-slate-50 dark:border-white/[0.07] dark:bg-[#111113] px-4 py-3 shadow-sm">
         <div className="flex items-center gap-1.5">
           {[0, 150, 300].map((delay) => (
             <div
@@ -130,9 +130,9 @@ export function AiChatWidget() {
         aria-label={isOpen ? "Close AI assistant" : "Open AI assistant"}
         className={cn(
           "fixed bottom-6 right-6 z-50 flex h-13 w-13 items-center justify-center rounded-2xl shadow-lg transition-all duration-200 cursor-pointer",
-          "bg-clarion-navy-800 text-white dark:bg-clarion-navy-700",
+          "bg-slate-700 text-white dark:bg-slate-700",
           "hover:shadow-xl hover:-translate-y-0.5 active:scale-95",
-          "border border-clarion-navy-700/50 dark:border-clarion-navy-600/50"
+          "border border-slate-700/50 dark:border-slate-700/50"
         )}
         style={{ height: "3.25rem", width: "3.25rem" }}
       >
@@ -149,17 +149,17 @@ export function AiChatWidget() {
           className={cn(
             "fixed bottom-24 right-6 z-40 flex flex-col rounded-2xl shadow-2xl overflow-hidden",
             "w-[350px] md:w-[380px] h-[520px]",
-            "bg-white dark:bg-slate-900",
-            "border border-slate-200 dark:border-slate-800",
+            "bg-white dark:bg-[#111113]",
+            "border border-slate-200 dark:border-white/[0.07]",
             "animate-in slide-in-from-bottom-4 fade-in duration-200 ease-out"
           )}
           role="dialog"
           aria-label="AI Assistant"
         >
           {/* Header */}
-          <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 bg-slate-50/60 dark:bg-slate-900/50 px-5 py-3.5 shrink-0">
+          <div className="flex items-center justify-between border-b border-slate-100 dark:border-white/[0.07] bg-slate-50/60 dark:bg-[#111113]/50 px-5 py-3.5 shrink-0">
             <div className="flex items-center gap-2.5">
-              <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-clarion-navy-800 dark:bg-clarion-navy-700 text-clarion-amber-400">
+              <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-slate-700 dark:bg-slate-700 text-clarion-amber-400">
                 <Sparkles className="h-4 w-4" />
               </div>
               <div>
@@ -203,7 +203,7 @@ export function AiChatWidget() {
           </div>
 
           {/* Input */}
-          <div className="flex items-center gap-2 border-t border-slate-100 dark:border-slate-800 bg-white dark:bg-slate-900 px-4 py-3 shrink-0">
+          <div className="flex items-center gap-2 border-t border-slate-100 dark:border-white/[0.07] bg-white dark:bg-[#111113] px-4 py-3 shrink-0">
             <Input
               placeholder="Ask a question…"
               value={message}
@@ -219,7 +219,7 @@ export function AiChatWidget() {
               className={cn(
                 "flex h-9 w-9 shrink-0 items-center justify-center rounded-xl transition-all duration-150 cursor-pointer",
                 message.trim() && !isPending
-                  ? "bg-clarion-navy-800 dark:bg-clarion-navy-700 text-white hover:bg-clarion-navy-700 dark:hover:bg-clarion-navy-600 shadow-sm"
+                  ? "bg-slate-700 dark:bg-slate-700 text-white hover:bg-slate-700 dark:hover:bg-slate-700 shadow-sm"
                   : "bg-slate-100 dark:bg-slate-800 text-slate-400 cursor-not-allowed"
               )}
               aria-label="Send message"

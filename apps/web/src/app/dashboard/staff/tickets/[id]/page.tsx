@@ -63,7 +63,7 @@ export default function StaffTicketDetailPage() {
   const notes = (notesRes?.data ?? []) as InternalNote[];
   const toast = useToast();
 
-  if (isLoading) return <div className="h-64 rounded-xl bg-slate-50 dark:bg-slate-900/50 border border-slate-100 dark:border-slate-850 animate-pulse" />;
+  if (isLoading) return <div className="h-64 rounded-xl bg-slate-50 dark:bg-[#111113]/50 border border-slate-100 dark:border-slate-850 animate-pulse" />;
   if (!ticket) return <p className="text-sm text-muted-foreground">Ticket not found.</p>;
 
   const nextStatuses = NEXT_STATUSES[ticket.status] ?? [];
@@ -115,7 +115,7 @@ export default function StaffTicketDetailPage() {
       />
 
       {/* Complaint summary */}
-      <Card className="border-border/80 shadow-sm bg-white dark:bg-slate-900/40">
+      <Card className="border-border/80 shadow-sm bg-white dark:bg-[#111113]/40">
         <CardHeader className="pb-3 border-b border-slate-100 dark:border-slate-850">
           <CardTitle className="text-xs font-semibold text-slate-400 dark:text-slate-500 uppercase tracking-wider">Complaint Details</CardTitle>
         </CardHeader>
@@ -125,7 +125,7 @@ export default function StaffTicketDetailPage() {
             <span className="text-xs font-semibold text-slate-400 tracking-wider uppercase">{ticket.complaint.referenceNumber}</span>
           </div>
           <p className="text-slate-700 dark:text-slate-350 leading-relaxed whitespace-pre-wrap">{ticket.complaint.description}</p>
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-6 pt-4 border-t border-slate-100 dark:border-slate-800">
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-6 pt-4 border-t border-slate-100 dark:border-white/[0.07]">
             <div>
               <p className="text-xs text-muted-foreground">Department</p>
               <p className="font-semibold text-slate-805 mt-1">{ticket.department?.name ?? "—"}</p>
@@ -151,7 +151,7 @@ export default function StaffTicketDetailPage() {
 
       {/* Assign */}
       <Card className="border-border/80 shadow-sm">
-        <CardHeader className="pb-3 border-b border-slate-100 dark:border-slate-800">
+        <CardHeader className="pb-3 border-b border-slate-100 dark:border-white/[0.07]">
           <CardTitle className="text-xs font-semibold text-slate-400 dark:text-slate-500 uppercase tracking-wider">Assign Ticket</CardTitle>
         </CardHeader>
         <CardContent className="pt-5">
@@ -176,7 +176,7 @@ export default function StaffTicketDetailPage() {
       {/* Status transitions */}
       {nextStatuses.length > 0 && (
         <Card className="border-border/80 shadow-sm">
-          <CardHeader className="pb-3 border-b border-slate-100 dark:border-slate-800">
+          <CardHeader className="pb-3 border-b border-slate-100 dark:border-white/[0.07]">
             <CardTitle className="text-xs font-semibold text-slate-400 dark:text-slate-500 uppercase tracking-wider">Update Ticket Status</CardTitle>
           </CardHeader>
           <CardContent className="pt-5">
@@ -200,7 +200,7 @@ export default function StaffTicketDetailPage() {
 
       {/* Internal notes */}
       <Card className="border-border/80 shadow-sm">
-        <CardHeader className="pb-3 border-b border-slate-100 dark:border-slate-800">
+        <CardHeader className="pb-3 border-b border-slate-100 dark:border-white/[0.07]">
           <CardTitle className="text-xs font-semibold text-slate-400 dark:text-slate-500 uppercase tracking-wider">Internal Team Notes</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4 pt-5">
@@ -209,7 +209,7 @@ export default function StaffTicketDetailPage() {
           ) : (
             <div className="space-y-3">
               {notes.map((n) => (
-                <div key={n.id} className="rounded-2xl border border-slate-100 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/30 p-4 animate-in fade-in duration-200">
+                <div key={n.id} className="rounded-2xl border border-slate-100 dark:border-white/[0.07] bg-slate-50/50 dark:bg-[#111113]/30 p-4 animate-in fade-in duration-200">
                   <p className="text-sm text-slate-800 dark:text-slate-200 leading-relaxed">{n.content}</p>
                   <p className="text-[11px] font-medium text-slate-400 dark:text-slate-500 mt-2 flex items-center gap-1.5">
                     <span className="font-semibold text-slate-650 dark:text-slate-405">{n.author.firstName} {n.author.lastName}</span>
@@ -222,7 +222,7 @@ export default function StaffTicketDetailPage() {
           )}
 
           {complaintId && (
-            <div className="flex gap-3 pt-4 border-t border-slate-100 dark:border-slate-800">
+            <div className="flex gap-3 pt-4 border-t border-slate-100 dark:border-white/[0.07]">
               <Input
                 placeholder="Add an internal note (only visible to staff)…"
                 value={noteText}

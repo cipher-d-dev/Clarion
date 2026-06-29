@@ -64,7 +64,7 @@ export default function LecturerComplaintDetailPage() {
           </div>
           <div>
             <p className="text-xs text-muted-foreground mb-1">Description</p>
-            <p className="text-clarion-navy-700 whitespace-pre-wrap">{complaint.description}</p>
+            <p className="text-slate-700 whitespace-pre-wrap">{complaint.description}</p>
           </div>
         </CardContent>
       </Card>
@@ -74,7 +74,7 @@ export default function LecturerComplaintDetailPage() {
       {canRate && (
         <Card className="border-clarion-amber-200 bg-clarion-amber-50">
           <CardContent className="p-5">
-            <p className="text-sm font-semibold text-clarion-navy-800 mb-2">How was your experience?</p>
+            <p className="text-sm font-semibold text-slate-800 dark:text-slate-100 mb-2">How was your experience?</p>
             <div className="flex gap-1">
               {[1, 2, 3, 4, 5].map((n) => (
                 <button key={n} type="button" onClick={() => setStarValue(n)}
@@ -98,11 +98,11 @@ export default function LecturerComplaintDetailPage() {
               {timeline.map((e, i) => (
                 <div key={e.id} className="flex gap-3">
                   <div className="flex flex-col items-center">
-                    <div className="h-2.5 w-2.5 rounded-full bg-clarion-navy-400 mt-1.5" />
-                    {i < timeline.length - 1 && <div className="w-px flex-1 bg-clarion-navy-100 my-1" />}
+                    <div className="h-2.5 w-2.5 rounded-full bg-slate-700 mt-1.5" />
+                    {i < timeline.length - 1 && <div className="w-px flex-1 bg-indigo-100/50 my-1" />}
                   </div>
                   <div className="pb-4">
-                    <p className="text-sm font-medium text-clarion-navy-800">{e.description}</p>
+                    <p className="text-sm font-medium text-slate-800 dark:text-slate-100">{e.description}</p>
                     <p className="text-xs text-muted-foreground mt-0.5">{new Date(e.createdAt).toLocaleString()}</p>
                   </div>
                 </div>
