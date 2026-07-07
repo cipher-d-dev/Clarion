@@ -82,6 +82,17 @@ export default function DeptHeadComplaintDetailPage() {
   const timeline = (timelineRes?.data ?? []) as TimelineEvent[];
   const notes = (notesRes?.data ?? []) as InternalNote[];
 
+  const handleAddNote = async () => {
+    if (!noteText.trim()) return;
+    try {
+      await addNote({ id, data: { content: noteText.trim() } });
+      setNoteText("");
+      toast("Note added");
+    } catch {
+      toast("Failed to add note", "error");
+    }
+  };
+
   if (isLoading) return <div className="space-y-4 max-w-3xl">{[1,2,3].map(i=><div key={i} className="h-32 animate-pulse rounded-xl bg-slate-100 dark:bg-slate-800/50"/>)}</div>;
   if (!complaint) return <p className="text-sm text-slate-500">Complaint not found.</p>;
 

@@ -39,9 +39,23 @@ export default function LoginPage() {
     defaultValues: { email: "", password: "" },
   });
 
-  // Track form field focus
+  // Track form field values to drive character typing feedback
   const emailWatchValue = form.watch("email");
   const passwordWatchValue = form.watch("password");
+
+  // When email field has content being typed, show the character reacting
+  useEffect(() => {
+    if (emailWatchValue) {
+      characterRef.current?.setState('email');
+    }
+  }, [emailWatchValue]);
+
+  // When password field has content being typed, show the character reacting
+  useEffect(() => {
+    if (passwordWatchValue) {
+      characterRef.current?.setState('password');
+    }
+  }, [passwordWatchValue]);
 
   useEffect(() => {
     if (form.formState.isSubmitting) {

@@ -1,7 +1,7 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { useEffect, useRef, useState } from "react";
+import { motion, AnimatePresence, useAnimation } from "framer-motion";
 
 type BotMood = "neutral" | "happy" | "sad" | "thinking";
 
@@ -11,10 +11,10 @@ interface AiAuthBotProps {
 }
 
 const WELCOME_MESSAGES = [
-  "Welcome to Clarion AI",
-  "Your intelligent assistant for seamless support",
-  "Advanced AI-powered complaint resolution",
-  "Let's help resolve your concerns efficiently",
+  { text: "Welcome to Clarion AI", duration: 3000 },
+  { text: "Your intelligent assistant for seamless support", duration: 3500 },
+  { text: "Advanced AI-powered complaint resolution", duration: 3500 },
+  { text: "Let's help resolve your concerns efficiently", duration: 3500 },
 ];
 
 export function AiAuthBot({ mood = "neutral", onMoodChange }: AiAuthBotProps) {
@@ -95,6 +95,11 @@ export function AiAuthBot({ mood = "neutral", onMoodChange }: AiAuthBotProps) {
     return () => clearInterval(showMessageInterval);
   }, []);
 
+  // Notify parent of mood changes
+  useEffect(() => {
+    onMoodChange?.(mood);
+  }, [mood, onMoodChange]);
+
   // Animate head shake on error
   useEffect(() => {
     if (mood === "sad") {
@@ -127,30 +132,29 @@ export function AiAuthBot({ mood = "neutral", onMoodChange }: AiAuthBotProps) {
   return (
     <div className="fixed left-8 top-1/2 -translate-y-1/2 z-50 hidden lg:block" ref={botRef}>
       {/* Speech bubble */}
-      <motion.div
-        initial={{ opacity: 0, scale: 0.8, x: -20 }}
-        animate={{
-          opacity: showMessage ? 1 : 0,
-          scale: showMessage ? 1 : 0.8,
-          x: showMessage ? 0 : -20,
-        }}
-        transition={{ duration: 0.3, ease: "easeOut" }}
-        className="absolute left-full ml-6 top-0 w-56 pointer-events-none"
-      >
-        <div className="relative bg-white dark:bg-slate-800 px-4 py-3 rounded-2xl shadow-lg border-2 border-indigo-200 dark:border-indigo-900/50">
-          <p className="text-sm font-medium text-slate-700 dark:text-slate-200">{currentMessage}</p>
-          {/* Speech bubble tail */}
-          <div className="absolute right-full top-6 w-0 h-0 border-t-8 border-t-transparent border-b-8 border-b-transparent border-r-8 border-r-indigo-200 dark:border-r-indigo-900/50" />
-          <div className="absolute right-full top-6 ml-0.5 w-0 h-0 border-t-8 border-t-transparent border-b-8 border-b-transparent border-r-8 border-r-white dark:border-r-slate-800" />
-        </div>
-      </motion.div>
+      <AnimatePresence>
+        {showMessage && (
+          <motion.div
+            key="speech-bubble"
+            initial={{ opacity: 0, scale: 0.8, x: -20 }}
+            animate={{ opacity: 1, scale: 1, x: 0 }}
+            exit={{ opacity: 0, scale: 0.8, x: -20 }}
+            transition={{ duration: 0.3, ease: "easeOut" }}
+            className="absolute left-full ml-6 top-0 w-56 pointer-events-none"
+          >
+            <div className="relative bg-white dark:bg-slate-800 px-4 py-3 rounded-2xl shadow-lg border-2 border-indigo-200 dark:border-indigo-900/50">
+              <p className="text-sm font-medium text-slate-700 dark:text-slate-200">{currentMessage}</p>
+              {/* Speech bubble tail */}
+              <div className="absolute right-full top-6 w-0 h-0 border-t-8 border-t-transparent border-b-8 border-b-transparent border-r-8 border-r-indigo-200 dark:border-r-indigo-900/50" />
+              <div className="absolute right-full top-6 ml-0.5 w-0 h-0 border-t-8 border-t-transparent border-b-8 border-b-transparent border-r-8 border-r-white dark:border-r-slate-800" />
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* Bot character */}
       <motion.div
-        animate={{
-          y: [0, -8, 0],
-          ...headControls,
-        }}
+        animate={{ y: [0, -8, 0] }}
         transition={{
           y: {
             duration: 3,
@@ -161,6 +165,8 @@ export function AiAuthBot({ mood = "neutral", onMoodChange }: AiAuthBotProps) {
         className="relative"
         style={{ width: "120px", height: "140px" }}
       >
+        {/* Head wrapper - driven by headControls for shake/scale effects */}
+        <motion.div animate={headControls} className="absolute inset-0">
         {/* Head - Claymorphism style */}
         <div className="absolute inset-0 bg-gradient-to-br from-indigo-400 to-indigo-600 rounded-[32px] shadow-[0_8px_0_rgba(79,70,229,0.3),0_12px_24px_rgba(79,70,229,0.2)] border-4 border-indigo-500/30">
           {/* Face */}
@@ -291,6 +297,7 @@ export function AiAuthBot({ mood = "neutral", onMoodChange }: AiAuthBotProps) {
         </div>
 
         {/* Body */}
+        </motion.div>
         <div className="absolute top-32 left-1/2 -translate-x-1/2 w-16 h-12 bg-gradient-to-br from-indigo-300 to-indigo-500 rounded-[20px] shadow-[0_6px_0_rgba(79,70,229,0.2)] border-3 border-indigo-400/30" />
       </motion.div>
     </div>
