@@ -1,12 +1,12 @@
 #!/bin/sh
-# start.sh — (Inside apps/api)
+# start.sh — (Located inside apps/api, but executed from Monorepo Root)
 
 echo "→ Running database migrations..."
-# Since apps/api is the root directory, prisma is right inside the local node_modules binary folder
-./node_modules/.bin/prisma migrate deploy --schema=./prisma/schema.prisma || {
+# Execute prisma through pnpm so it references the local monorepo binaries
+pnpm --filter=@clarion/api exec prisma migrate deploy --schema=./apps/api/prisma/schema.prisma || {
   echo "⚠️  Migration failed or already up to date — continuing to start server..."
 }
 
 echo "→ Starting Clarion API..."
-# Since apps/api is the root, dist/server.js is relative to where you are standing
-node dist/server.js
+# Point explicitly to the subfolder where Turbo builds the app
+node apps/api/dist/server.js
