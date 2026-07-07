@@ -120,7 +120,7 @@ export default function LoginPage() {
               Welcome back to Clarion! ✨
             </h2>
             <p className="mt-3 text-base text-indigo-200 leading-relaxed max-w-md">
-              Your AI-powered complaint management platform. Let's make every voice heard.
+              Your AI-powered complaint management platform. Let&apos;s make every voice heard.
             </p>
 
             <ul className="mt-10 space-y-4">
