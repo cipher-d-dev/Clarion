@@ -186,14 +186,13 @@ export default function LoginPage() {
                   placeholder="you@institution.edu"
                   autoComplete="email"
                   className="h-14 rounded-2xl border-3 border-slate-200 dark:border-slate-700 bg-white dark:bg-[#111113] px-5 text-base font-medium shadow-[0_4px_0_rgba(0,0,0,0.05)] dark:shadow-[0_4px_0_rgba(255,255,255,0.02)] focus:border-indigo-400 dark:focus:border-indigo-500 focus:shadow-[0_4px_0_rgba(79,70,229,0.2)] transition-all duration-200"
-                  aria-describedby={form.formState.errors.email ? "email-error" : undefined}
                   onFocus={() => characterRef.current?.setState('email')}
                   {...form.register("email", {
                     onBlur: () => characterRef.current?.setState('idle'),
                   })}
                 />
               </FormControl>
-              <FormMessage id="email-error" className="mt-2 text-sm font-medium">
+              <FormMessage className="mt-2 text-sm font-medium">
                 {form.formState.errors.email?.message}
               </FormMessage>
             </FormField>
