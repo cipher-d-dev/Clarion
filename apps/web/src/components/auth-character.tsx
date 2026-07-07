@@ -241,7 +241,7 @@ const AuthCharacter = forwardRef<AuthCharacterHandle>((_, ref) => {
               {/* Eyelid: transformOrigin as Framer Motion prop (top edge = 162) */}
               <motion.rect
                 x="136" y="162" width="18" height="18" fill="#09090b"
-                transformOrigin="145px 162px"
+                style={{ transformOrigin: "145px 162px" }}
                 animate={{ scaleY: eyesOpen ? 0 : 1 }}
                 transition={{ duration: 0.15 }}
               />
@@ -260,7 +260,7 @@ const AuthCharacter = forwardRef<AuthCharacterHandle>((_, ref) => {
               <circle cx="177" cy="169" r="1.2" fill="white" opacity="0.8" />
               <motion.rect
                 x="166" y="162" width="18" height="18" fill="#09090b"
-                transformOrigin="175px 162px"
+                style={{ transformOrigin: "175px 162px" }}
                 animate={{ scaleY: eyesOpen ? 0 : 1 }}
                 transition={{ duration: 0.15 }}
               />
@@ -270,7 +270,7 @@ const AuthCharacter = forwardRef<AuthCharacterHandle>((_, ref) => {
             <motion.rect
               x="128" y="155" width="64" height="32" rx="6"
               fill="#1f1f23" stroke="#4f46e5" strokeWidth="1"
-              transformOrigin="160px 155px"
+              style={{ transformOrigin: "160px 155px" }}
               clipPath="url(#visorClip)"
               animate={{ scaleY: visorDown ? 1 : 0 }}
               transition={{ duration: 0.4, ease: 'easeInOut' }}

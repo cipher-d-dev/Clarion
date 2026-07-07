@@ -74,6 +74,7 @@ export function AiAuthBot({ mood = "neutral", onMoodChange }: AiAuthBotProps) {
   useEffect(() => {
     const showMessageInterval = setInterval(() => {
       const message = WELCOME_MESSAGES[messageIndex.current];
+      if (!message) return;
       setCurrentMessage(message.text);
       setShowMessage(true);
 
@@ -87,6 +88,7 @@ export function AiAuthBot({ mood = "neutral", onMoodChange }: AiAuthBotProps) {
     // Show first message after 2 seconds
     setTimeout(() => {
       const message = WELCOME_MESSAGES[0];
+      if (!message) return;
       setCurrentMessage(message.text);
       setShowMessage(true);
       setTimeout(() => setShowMessage(false), message.duration);

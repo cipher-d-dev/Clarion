@@ -187,8 +187,9 @@ export default function RegisterPage() {
                     autoComplete="given-name"
                     className="h-14 rounded-2xl border-3 border-slate-200 dark:border-slate-700 bg-white dark:bg-[#111113] px-5 text-base font-medium shadow-[0_4px_0_rgba(0,0,0,0.05)] dark:shadow-[0_4px_0_rgba(255,255,255,0.02)] focus:border-indigo-400 dark:focus:border-indigo-500 focus:shadow-[0_4px_0_rgba(79,70,229,0.2)] transition-all duration-200"
                     onFocus={() => characterRef.current?.setState('typing')}
-                    onBlur={() => characterRef.current?.setState('idle')}
-                    {...form.register("firstName")}
+                    {...form.register("firstName", {
+                      onBlur: () => characterRef.current?.setState('idle'),
+                    })}
                   />
                 </FormControl>
                 <FormMessage className="mt-2 text-sm font-medium">
@@ -205,8 +206,9 @@ export default function RegisterPage() {
                     autoComplete="family-name"
                     className="h-14 rounded-2xl border-3 border-slate-200 dark:border-slate-700 bg-white dark:bg-[#111113] px-5 text-base font-medium shadow-[0_4px_0_rgba(0,0,0,0.05)] dark:shadow-[0_4px_0_rgba(255,255,255,0.02)] focus:border-indigo-400 dark:focus:border-indigo-500 focus:shadow-[0_4px_0_rgba(79,70,229,0.2)] transition-all duration-200"
                     onFocus={() => characterRef.current?.setState('typing')}
-                    onBlur={() => characterRef.current?.setState('idle')}
-                    {...form.register("lastName")}
+                    {...form.register("lastName", {
+                      onBlur: () => characterRef.current?.setState('idle'),
+                    })}
                   />
                 </FormControl>
                 <FormMessage className="mt-2 text-sm font-medium">
@@ -226,8 +228,9 @@ export default function RegisterPage() {
                   autoComplete="email"
                   className="h-14 rounded-2xl border-3 border-slate-200 dark:border-slate-700 bg-white dark:bg-[#111113] px-5 text-base font-medium shadow-[0_4px_0_rgba(0,0,0,0.05)] dark:shadow-[0_4px_0_rgba(255,255,255,0.02)] focus:border-indigo-400 dark:focus:border-indigo-500 focus:shadow-[0_4px_0_rgba(79,70,229,0.2)] transition-all duration-200"
                   onFocus={() => characterRef.current?.setState('email')}
-                  onBlur={() => characterRef.current?.setState('idle')}
-                  {...form.register("email")}
+                  {...form.register("email", {
+                    onBlur: () => characterRef.current?.setState('idle'),
+                  })}
                 />
               </FormControl>
               <FormMessage className="mt-2 text-sm font-medium">
@@ -244,8 +247,9 @@ export default function RegisterPage() {
                   placeholder="unilag-demo"
                   className="h-14 rounded-2xl border-3 border-slate-200 dark:border-slate-700 bg-white dark:bg-[#111113] px-5 text-base font-medium shadow-[0_4px_0_rgba(0,0,0,0.05)] dark:shadow-[0_4px_0_rgba(255,255,255,0.02)] focus:border-indigo-400 dark:focus:border-indigo-500 focus:shadow-[0_4px_0_rgba(79,70,229,0.2)] transition-all duration-200"
                   onFocus={() => characterRef.current?.setState('typing')}
-                  onBlur={() => characterRef.current?.setState('idle')}
-                  {...form.register("institutionSlug")}
+                  {...form.register("institutionSlug", {
+                    onBlur: () => characterRef.current?.setState('idle'),
+                  })}
                 />
               </FormControl>
               <FormMessage className="mt-2 text-sm font-medium">
@@ -262,8 +266,9 @@ export default function RegisterPage() {
                   placeholder="CS/2021/001"
                   className="h-14 rounded-2xl border-3 border-slate-200 dark:border-slate-700 bg-white dark:bg-[#111113] px-5 text-base font-medium shadow-[0_4px_0_rgba(0,0,0,0.05)] dark:shadow-[0_4px_0_rgba(255,255,255,0.02)] focus:border-indigo-400 dark:focus:border-indigo-500 focus:shadow-[0_4px_0_rgba(79,70,229,0.2)] transition-all duration-200"
                   onFocus={() => characterRef.current?.setState('typing')}
-                  onBlur={() => characterRef.current?.setState('idle')}
-                  {...form.register("matricNo")}
+                  {...form.register("matricNo", {
+                    onBlur: () => characterRef.current?.setState('idle'),
+                  })}
                 />
               </FormControl>
             </FormField>
@@ -279,8 +284,9 @@ export default function RegisterPage() {
                   autoComplete="new-password"
                   className="h-14 rounded-2xl border-3 border-slate-200 dark:border-slate-700 bg-white dark:bg-[#111113] px-5 text-base font-medium shadow-[0_4px_0_rgba(0,0,0,0.05)] dark:shadow-[0_4px_0_rgba(255,255,255,0.02)] focus:border-indigo-400 dark:focus:border-indigo-500 focus:shadow-[0_4px_0_rgba(79,70,229,0.2)] transition-all duration-200"
                   onFocus={() => characterRef.current?.setState('password')}
-                  onBlur={() => characterRef.current?.setState('idle')}
-                  {...form.register("password")}
+                  {...form.register("password", {
+                    onBlur: () => characterRef.current?.setState('idle'),
+                  })}
                 />
               </FormControl>
               <FormMessage className="mt-2 text-sm font-medium">
@@ -299,8 +305,9 @@ export default function RegisterPage() {
                   autoComplete="new-password"
                   className="h-14 rounded-2xl border-3 border-slate-200 dark:border-slate-700 bg-white dark:bg-[#111113] px-5 text-base font-medium shadow-[0_4px_0_rgba(0,0,0,0.05)] dark:shadow-[0_4px_0_rgba(255,255,255,0.02)] focus:border-indigo-400 dark:focus:border-indigo-500 focus:shadow-[0_4px_0_rgba(79,70,229,0.2)] transition-all duration-200"
                   onFocus={() => characterRef.current?.setState('password')}
-                  onBlur={() => characterRef.current?.setState('idle')}
-                  {...form.register("confirmPassword")}
+                  {...form.register("confirmPassword", {
+                    onBlur: () => characterRef.current?.setState('idle'),
+                  })}
                 />
               </FormControl>
               <FormMessage className="mt-2 text-sm font-medium">
