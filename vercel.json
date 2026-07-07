@@ -1,11 +1,6 @@
 {
   "buildCommand": "pnpm turbo run db:generate && pnpm turbo run build --filter=@clarion/web...",
-  "outputDirectory": "apps/web/.next",
+  "outputDirectory": ".next",
   "installCommand": "pnpm install",
-  "rewrites": [
-    {
-      "source": "/((?!_next/|static/|favicon.ico|.*\\..*$).*)",
-      "destination": "/index.html"
-    }
-  ]
+  "framework": "nextjs"
 }
